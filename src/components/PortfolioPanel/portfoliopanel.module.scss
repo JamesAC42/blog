@@ -1,0 +1,123 @@
+.portfolioPanel {
+    display:flex;
+    flex-direction:column;
+    gap:1.25rem;
+    color:var(--color-text-primary);
+}
+
+.intro {
+    font-size:0.9rem;
+    line-height:1.6;
+    color:var(--color-text-muted);
+    text-shadow:0 0 10px rgba(63, 208, 255, 0.25);
+}
+
+.projectsGrid {
+    display:grid;
+    gap:1rem;
+    grid-template-columns:repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.projectCard {
+    background:linear-gradient(135deg, rgba(19, 29, 82, 0.8), rgba(5, 10, 26, 0.92));
+    border:1px solid rgba(70, 126, 255, 0.35);
+    border-radius:0.75rem;
+    padding:1rem;
+    display:flex;
+    flex-direction:column;
+    gap:0.75rem;
+    box-shadow:0 0 16px rgba(74, 169, 255, 0.25);
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform:translateY(-4px);
+        box-shadow:0 0 20px rgba(63, 208, 255, 0.35);
+    }
+}
+
+.projectMeta {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--color-text-muted);
+}
+
+.projectYear {
+    font-weight:700;
+}
+
+.projectRole {
+    font-family: var(--font-pixel-mix);
+}
+
+.projectTitle {
+    margin:0;
+    font-size:1.25rem;
+    color:var(--color-accent-bright);
+    text-shadow:0 0 10px rgba(63, 208, 255, 0.5);
+}
+
+.projectSummary {
+    margin:0;
+    line-height:1.6;
+    font-size:0.95rem;
+}
+
+.tagList {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.4rem;
+    margin:0;
+    padding:0;
+    list-style:none;
+
+    li {
+        padding:0.25rem 0.6rem;
+        border-radius:0.5rem;
+        border:1px solid rgba(63, 208, 255, 0.35);
+        background:rgba(26, 38, 96, 0.6);
+        font-size:0.75rem;
+        font-family: var(--font-pixel-mix);
+        letter-spacing:0.03em;
+    }
+}
+
+.links {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.75rem;
+    font-family: var(--font-pixel-mix);
+
+    a {
+        color:var(--color-accent-bright);
+        text-decoration:none;
+        position:relative;
+        padding-bottom:2px;
+
+        &::after {
+            content:"";
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:0;
+            height:1px;
+            background:linear-gradient(90deg, rgba(63, 208, 255, 0.7), rgba(126, 92, 255, 0.7));
+            transform-origin:right;
+            transform:scaleX(0);
+            transition:transform 0.2s ease;
+        }
+
+        &:hover::after {
+            transform-origin:left;
+            transform:scaleX(1);
+        }
+    }
+}
+
+.actions {
+    display:flex;
+    justify-content:flex-end;
+}

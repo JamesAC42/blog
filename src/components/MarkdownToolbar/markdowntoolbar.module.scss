@@ -1,0 +1,34 @@
+.toolbar {
+    display:flex;
+    gap:0.5rem;
+    flex-wrap:wrap;
+    margin-bottom:1rem;
+    button, .uploadBtn {
+        border:2px solid rgba(70, 126, 255, 0.5);
+        color:var(--color-accent-bright);
+        background:rgba(10, 16, 38, 0.85);
+        padding:0.4rem 0.8rem;
+        border-radius:0.5rem;
+        font-size:0.8rem;
+        font-family: var(--font-pixel-mix);
+        cursor: var(--pointer-cursor-url), auto;
+
+        &:hover {
+            background:linear-gradient(135deg, rgba(63, 208, 255, 0.75), rgba(126, 92, 255, 0.75));
+            color:var(--color-bg);
+        }
+    }
+    .uploadBtn {
+
+        position:relative;
+        overflow:hidden;
+        input[type="file"] {
+            position:absolute;
+            inset:0;
+            opacity:0;
+            cursor:pointer;
+        }
+    }
+}
+
+

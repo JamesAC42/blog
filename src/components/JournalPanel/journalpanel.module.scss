@@ -1,0 +1,87 @@
+.diaryWindow {
+    overflow-y: auto;
+    max-height:30rem;
+    .diaryEntry { 
+        position:relative;
+        margin-bottom: 1rem; 
+        padding:1rem;
+        border:1px solid rgba(68, 132, 255, 0.35);
+        box-shadow: inset 1px 1px 0 0 rgba(128, 168, 255, 0.25), 0 0 15px rgba(74, 169, 255, 0.25);
+
+        .entryHeader {
+            display:flex;
+            flex-direction:column;
+            gap:0.35rem;
+            margin-bottom:0.5rem;
+        }
+
+        .entryTitle {
+            margin:0;
+            border-bottom:2px dotted rgba(63, 208, 255, 0.35);
+            padding:0.25rem 0.5rem;
+            font-family: var(--font-pixel-mix);
+            color:var(--color-accent);
+            font-size:1.1rem;
+            text-shadow:0 0 8px rgba(127, 90, 240, 0.45);
+        }
+
+        .entryDate {
+            font-size:0.85rem;
+            color:var(--color-text-muted);
+            padding:0 0.5rem;
+        }
+
+        .entryPreviewContainer {
+            background:transparent;
+        }
+
+        .entryPreview {
+            margin:1rem 0;
+            padding:0.5rem 0.75rem;
+            background:linear-gradient(135deg, rgba(17, 26, 74, 0.85), rgba(6, 10, 28, 0.85));
+            border-radius:0.2rem;
+            box-shadow: 0 0 12px -1px rgba(74, 169, 255, 0.25);   
+            background:
+                /* horizontal lines */
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0 1.25rem,
+                    rgba(63, 95, 214, 0.08) 1.25rem 1.3125rem
+                );
+
+            :global(p) {
+                margin:0 0 0.75rem 0;
+
+                &:last-child {
+                    margin-bottom:0;
+                }
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                margin-top:0;
+            }
+        }
+
+        .diaryButtonContainer {
+            padding:0;
+            display:flex;
+            justify-content: flex-end;
+            margin-top:5rem;
+        }
+
+        .diaryStickerContainer {
+            position:absolute;
+            bottom:0;
+            left:0;
+            padding:1.5rem 1.5rem;
+        }
+    }
+}
+
+.diaryEmpty {
+    font-family: var(--font-pixel-mix);
+    color:var(--color-accent);
+    font-size:1rem;
+    text-align:center;
+    padding:2rem 0;
+}

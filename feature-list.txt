@@ -1,0 +1,49 @@
+- diary/ blog
+- about me
+- photo gallery
+    - fashion
+    - makeup
+    - magazine scans
+    - photos + captions/blurb
+    - like a scrapbook
+    - comments (on page not photos)
+- my favorite things
+    - songs, makeup products, skincare, etc
+    - comments
+- guestbook - message board for visitors to leave comments
+    - ask favorite sanrio character
+- quiz/survey page for engagement
+- anime tracker
+- music playlist
+- currently intersted in section
+
+
+things to add to homepage:
+- [x] custom music player styled like old windows media player, play tommy airline
+- [x] anilist section with currently watching + link to anilist profile
+- [x] blog posts section with most popular + recently added
+- [x] gallery preview section show actual pictures with some kind of interactive carousel animation
+- [x] window hover: show a character peeking out from behind window
+- [x] character floating bottom corners
+- [x] todo list section / goals
+- [x] copyright/additional info section at bottom
+- [x] social media section + ribbon at top
+    - [x] twitter, instagram, tiktok, anilist, pinterest
+- [x] faq section
+- [x] analytics section (page views, most viewed pages, etc)
+
+Stationery vibes: lined-paper background, dotted borders, washi tape/scrapbook corners, paperclip/polaroid frames for entries; sticky note for the form
+Kawaii microinteractions: heart-sparkle burst on submit, soft “pop” sound (use emailmore.mp3), gentle wiggle on hover, floating sakura petals (reduced-motion aware)
+Stickers & stamps: randomly place a small sticker/stamp beside each entry (from your assets), subtle rotation per item for handmade feel
+Pixel aesthetics: use pixelmix for names/timestamps, tiny pixel-heart dividers, “New!” pixel badge after posting
+Admin polish: pink ribbon “Admin” badge, reply bubbles styled as smaller taped notes indented under the parent
+Kaomoji + emoji: quick-insert palette (´• ᴗ •) ♡, character counter that fills with hearts as you type 
+- Entry reactions: small heart/flower reaction counts (client-only), limit to 1 per session 
+- Seasonal overlays: toggle sakura/snow/star sparkles layer; very subtle, behind content 
+- Preview panel (home): "latest 20 notes" with a View All button; truncate text with a "more" chevron 
+- Nostalgic web accents: a tiny blinkie row footer or a glitter line—used sparingly to avoid clutter 
+- Accessibility: high-contrast toggle, honors prefers-reduced-motion, sufficient contrast for pastel text 
+- Performance feel: skeleton loaders shaped like taped notes; "Load older notes" button (no infinite scroll) 
+- Share & invite: "Sign my guestbook" share button, copy link to a specific entry 
+- Gentle empty state: smiling sticker + "Be the first to leave a sweet note!" 
+- SCSS touches: pastel gradient backgrounds, dotted borders, 0.25rem–0.5rem rounded corners, soft drop shadows; always use rem units

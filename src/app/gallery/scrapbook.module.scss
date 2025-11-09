@@ -1,0 +1,322 @@
+@import "@/styles/tilt.module.scss";
+
+.filterBar {
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.filterRow {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filterLabel {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-pixel-mix);
+}
+
+.select,
+.input {
+    border: 0.0625rem solid #8caeff;
+    background: #120d22;
+    padding: 0.5rem 0.75rem;
+    color: #f8fcff;
+    border-radius: 0.375rem;
+    outline: none;
+    font-family: var(--font-pixel-mix);
+    font-size: 0.8rem;
+}
+
+.select:focus,
+.input:focus {
+    box-shadow: 0 0 0 0.1875rem rgba(255, 140, 182, 0.2);
+}
+
+.mlHalf {
+    margin-left: 0.5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1rem;
+    perspective: 50rem;
+    position: relative;
+}
+
+.gridDim {
+    position: relative;
+    z-index: 4000; /* ensure this whole grid paints above other album grids (perspective creates stacking contexts) */
+}
+
+.gridDim .polaroid {
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+.gridDim .polaroid.polaroidFocused {
+    opacity: 1;
+    filter: none;
+    pointer-events: auto;
+}
+
+.mt1 {
+    margin-top: 1rem;
+}
+
+.mb2 {
+    margin-bottom: 2rem;
+}
+
+.albumHeader {
+    display:inline;
+    text-transform: capitalize;
+    font-family: var(--font-pixel-mix);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-shadow:0 0 8px rgba(126, 92, 255, 0.4);
+}
+
+@keyframes appearPolaroid {
+    0% {
+        opacity:0;
+        transform:translateY(10rem) rotate(var(--tilt)) translateZ(0);
+    }
+    100% {
+        opacity:1;
+        transform:rotate(var(--tilt)) translateZ(0);
+    }
+}
+
+.polaroid {
+    background: #07050f;
+    border: 0.1625rem solid #af88ff;
+    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
+    border-radius: 0.25rem;
+    padding: 0.75rem 0.75rem 1rem 0.75rem;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1), box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    transform: rotate(var(--tilt)) translateZ(0);
+    height:fit-content;
+    cursor: var(--pointer-cursor-url), auto;
+
+    animation-delay: var(--delay);
+    animation: appearPolaroid 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index:1;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.polaroid:hover {
+    transform: translateY(-0.25rem) translateZ(1rem) scale(1.03) rotate(calc(var(--tilt) * 2));
+    box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.12);
+}
+
+.polaroidImage {
+    width: 100%;
+    height: 20rem;
+    object-fit: cover;
+    background: #faf6f8;
+    border-radius: 0.25rem;
+    border: 0.1625rem solid #c4a6ff;
+}
+
+.polaroidFocused {
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(1.8) rotate(0deg);
+    z-index: 3000;
+    box-shadow: 0 1rem 2rem rgba(38, 34, 69, 0.461);
+    position: relative;
+
+    .polaroidOpen {
+        display:none;
+    }
+}
+
+.polaroidFocused:hover {
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(1.8) rotate(0deg);
+}
+
+.polaroidCaption {
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+
+/* Lightbox */
+.lightboxBackdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightboxInner {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    animation: zoomIn 0.2s ease-out;
+}
+
+.lightboxImage {
+    width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    background: #fff;
+}
+
+.lightboxCaption {
+    margin-top: 0.5rem;
+    text-align: center;
+    color: #333;
+
+    .cardTitle {
+        font-family: var(--font-chalktastic);
+    }
+}
+
+.lightboxClose {
+    position: absolute;
+    right: 0;
+    top: -2.5rem;
+}
+
+@keyframes zoomIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.polaroidOpen {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #120c30;
+    border: 0.1625rem solid #ab87ff;
+    border-radius: 0.175rem;
+    padding: 0.25rem 0.375rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.1);
+    cursor: pointer;
+    z-index: 2; /* below images/cards */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    cursor: var(--pointer-cursor-url), auto;
+
+    img {
+        filter: hue-rotate(180deg);
+    }
+}
+
+.polaroidOpen:hover {
+    transform: translateY(-0.0625rem);
+    outline: 1px dotted #ff8cb6;
+}
+
+.polaroid:hover .polaroidOpen,
+.polaroidFocused .polaroidOpen {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tagsRow {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tagChip {
+    border: 0.0625rem solid #ff8cb6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+}
+
+.paginationBar {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 3rem;
+    align-items:center;
+    margin-bottom:6rem;
+
+    font-family: var(--font-pixel-mix);
+    color:#413636;
+    font-weight:700;
+    position: relative;
+    z-index: 0;
+}
+
+.buttonRow {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.seeAllCell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:#fffdfe;
+    border:1px solid #ffa7da;
+    border-radius:0.25rem;
+    margin:2rem;
+    cursor:var(--pointer-cursor-url), auto;
+    transition:all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 0;
+
+    &:hover {
+        background:#ff7daa;
+        color:#fff;
+        border-color:#fff;
+        border-width:4px;
+        outline:1px solid #ff7daa;
+        border-radius:0.5rem;
+        transform:scale(0.8) translateX(1rem);
+    }
+}
+
+.cardTitle {
+    font-weight: 600;
+}
+
+.cardDate {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.buttonInner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-pixel-mix);
+}
+
+.loadingContainer {
+    padding:2rem 0;
+    text-align:center;
+    font-family: var(--font-pixel-mix);
+    font-size: 0.8rem;
+    color: #85a0b5;
+}
+
+.buttonInner {
+    padding:1rem;
+    font-size:1.1rem;
+    font-weight:700;
+}

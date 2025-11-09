@@ -1,0 +1,27 @@
+.statusItem {
+    font-family: var(--font-pixel-mix);
+    font-size:0.8rem;
+    color:var(--color-text-primary);
+    margin-top:0.5rem;
+    line-height:1.4;
+}
+
+.bold {
+    font-weight:700;
+    color:#a387ff;
+    text-shadow:0 0 6px rgba(63, 208, 255, 0.45);
+}
+
+.peashooterContainer {
+    margin-top:0.5rem;
+    border-radius:0.5rem;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding-bottom:1rem;
+    img.spinningCat {
+        width:30%;
+        height:auto;
+        display:inline-block;
+    }
+}

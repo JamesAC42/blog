@@ -1,0 +1,21 @@
+
+
+.favoritesList {
+    font-family: var(--font-pixel-mix);
+    list-style:none;
+    padding:0;
+    margin:0;
+    li {
+        strong {
+            font-weight:500;
+            color:var(--color-accent-bright);
+            text-shadow:0 0 6px rgba(63, 208, 255, 0.45);
+        }
+        margin:0.5rem 0;
+        padding:0.5rem 0.5rem;
+        color:var(--color-text-primary);
+        border:1px solid rgba(70, 126, 255, 0.35);
+        background:rgba(30, 42, 104, 0.45);
+        backdrop-filter:blur(10px);
+    }
+}

@@ -1,0 +1,373 @@
+.entryPage {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-bottom: 3rem;
+}
+
+.backRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.backLink {
+    text-decoration: none;
+}
+
+.scene {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: flex-start;
+    perspective: 160rem;
+}
+
+.monitorZone {
+    flex: 1;
+    min-width: min(100%, 50rem);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transform-style: preserve-3d;
+}
+
+.monitorOuter {
+    position: relative;
+    background: linear-gradient(145deg, #f4f5ff, #d4d8e8);
+    padding: 2.5rem 2.25rem 3rem;
+    border-radius: 1.5rem;
+    border: 0.25rem solid rgba(42, 48, 72, 0.25);
+    box-shadow: -1.75rem 1.75rem 4.5rem rgba(28, 26, 61, 0.32), inset 0 0.5rem 1.5rem rgba(255, 255, 255, 0.35);
+    max-width: 50rem;
+    //transform: rotateY(-8deg) rotateX(2deg) translateX(-1.5rem);
+}
+
+.monitorOuter::after {
+    content: "";
+    position: absolute;
+    inset: 0.75rem;
+    border-radius: 1rem;
+    border: 0.1rem solid rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+}
+
+.monitorTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.monitorBrand {
+    font-family: var(--font-sourgummy);
+    font-size: 1.125rem;
+    letter-spacing: 0.2rem;
+    text-transform: uppercase;
+    color: rgba(38, 47, 87, 0.8);
+}
+
+.monitorControls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.monitorControl {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff 0.05rem, #e9edf6 0.4rem, #c6ccdd 0.75rem);
+    box-shadow: inset 0.1rem 0.15rem 0.3rem rgba(255, 255, 255, 0.6), inset -0.1rem -0.2rem 0.4rem rgba(44, 54, 97, 0.35);
+}
+
+.monitorScreen {
+    position: relative;
+    border-radius: 1rem;
+    padding: 2rem;
+    background: radial-gradient(circle at 50% 20%, rgba(88, 207, 255, 0.35), rgba(24, 38, 71, 0.95) 70%);
+    background: radial-gradient(circle at 50% 20%, rgba(137, 152, 251, 0.35), rgba(0, 0, 0, 0.95) 70%);
+    box-shadow: inset 0 1.2rem 2.1rem rgba(12, 22, 48, 0.65), inset 0 -0.75rem 2rem rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    border: 0.15rem solid rgba(24, 35, 66, 0.75);
+}
+
+.monitorScreen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.06) 0,
+        rgba(255, 255, 255, 0.06) 0.15rem,
+        rgba(0, 0, 0, 0) 0.15rem,
+        rgba(0, 0, 0, 0) 0.3rem
+    );
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    pointer-events: none;
+}
+
+.monitorScreen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0) 40%);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.screenInner {
+    position: relative;
+    z-index: 1;
+    max-height: 65dvh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(140, 193, 255, 0.7) rgba(24, 38, 71, 0.6);
+}
+
+.screenInner::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+.screenInner::-webkit-scrollbar-track {
+    background: rgba(24, 38, 71, 0.55);
+}
+
+.screenInner::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(140, 193, 255, 0.7), rgba(88, 207, 255, 0.3));
+    border-radius: 1rem;
+}
+
+.screenMessage {
+    color: #d1ecff;
+    font-family: var(--font-sourgummy);
+    font-size: 1.1rem;
+}
+
+.screenContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.entryHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.entryTitle {
+    font-family: var(--font-pixel-mix);
+    font-size: 2.5rem;
+    color: #78ff76;
+    margin: 0;
+    text-shadow: 0 0.35rem 0.75rem rgba(20, 12, 48, 0.45);
+}
+
+.entryMeta {
+    display: flex;
+    gap: 1rem;
+    color: rgba(180, 220, 255, 0.85);
+    font-size: 1.1rem;
+    align-items: center;
+    font-family: var(--font-pixel-mix);
+}
+
+.metaItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.diaryGreeting {
+    font-family: var(--font-pixel-mix);
+    font-size: 1.25rem;
+    color: rgba(201, 235, 255, 0.9);
+    letter-spacing: 0.03rem;
+}
+
+.entryBody {
+    font-family: var(--font-pixel-mix);
+    font-size: 1.15rem;
+    color: rgba(221, 240, 255, 0.88);
+    line-height: 1.7;
+
+    & > * {
+        max-width: 100%;
+    }
+
+    p {
+        margin-bottom: 1rem;
+        text-indent: 1.5rem;
+    }
+
+    a {
+        color: #8edcff;
+    }
+
+    strong {
+        color: #fee1ff;
+    }
+}
+
+.signature {
+    font-family: var(--font-miss-fajardose);
+    font-size: 4rem;
+    color: rgba(255, 224, 255, 0.85);
+    text-align: right;
+    margin-top: 1rem;
+    padding-right: 1rem;
+}
+
+.deskArea {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.75rem;
+    transform: translateX(-2.5rem) rotateY(-6deg);
+}
+
+.keyboardWrap {
+    width: 100%;
+    filter: drop-shadow(-1.2rem 1.2rem 2.6rem rgba(28, 26, 61, 0.28));
+}
+
+.keyboardImage {
+    width: 100%;
+    height: auto;
+    max-width: 50rem;
+    display: block;
+}
+
+.mouse {
+    width: 4.75rem;
+    height: 6.5rem;
+    background: radial-gradient(circle at 40% 20%, #fdfbff 0.3rem, #d6d9e5 3rem, #c2c8d8 6.5rem);
+    border-radius: 2.4rem 2.4rem 3.5rem 3.5rem;
+    box-shadow: -0.8rem 0.8rem 2.2rem rgba(28, 26, 61, 0.28), inset 0 0.35rem 0.8rem rgba(255, 255, 255, 0.6);
+    position: relative;
+    transform: rotateX(22deg) rotateY(-6deg);
+}
+
+.mouse::before {
+    content: "";
+    position: absolute;
+    top: 2.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.1rem;
+    height: 2rem;
+    background: rgba(132, 138, 164, 0.55);
+}
+
+.mouseWheel {
+    position: absolute;
+    top: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0.45rem;
+    height: 1rem;
+    border-radius: 0.45rem;
+    background: linear-gradient(180deg, rgba(84, 96, 132, 0.8), rgba(52, 64, 98, 0.9));
+    box-shadow: inset 0 0.2rem 0.4rem rgba(28, 26, 61, 0.4);
+}
+
+.sidePanel {
+    width: clamp(14rem, 18vw, 18rem);
+    min-height: clamp(24rem, 70dvh, 100%);
+    background: linear-gradient(180deg, rgba(40, 24, 62, 0.92), rgba(58, 31, 83, 0.92));
+    border-radius: 1.25rem;
+    border: 0.15rem solid rgba(255, 166, 254, 0.25);
+    box-shadow: -0.75rem 1.25rem 3rem rgba(22, 18, 54, 0.35);
+    transform: rotateY(4deg) translateX(-1.25rem);
+    display: flex;
+}
+
+.sidePanelContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 2rem 1.75rem;
+    width: 100%;
+}
+
+.sidePanelHeader {
+    font-family: var(--font-sourgummy);
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18rem;
+    color: #ffbdf9;
+}
+
+.sidePanelNote {
+    font-family: var(--font-sourgummy);
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: rgba(248, 225, 255, 0.85);
+}
+
+.sidePanelDivider {
+    height: 0.15rem;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(255, 108, 194, 0), rgba(255, 108, 194, 0.85), rgba(129, 204, 255, 0.85), rgba(129, 204, 255, 0));
+    border-radius: 1rem;
+}
+
+.stickerWrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(35, 18, 63, 0.6);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.stickerWrap :global(svg) {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media (max-width: 1024px) {
+    .monitorOuter {
+        transform: rotateY(-5deg) rotateX(1deg) translateX(-0.75rem);
+    }
+
+    .deskArea {
+        transform: translateX(-1.5rem) rotateY(-4deg);
+    }
+
+    .sidePanel {
+        transform: rotateY(3deg) translateX(-0.75rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .scene {
+        flex-direction: column;
+    }
+
+    .monitorZone {
+        min-width: 100%;
+    }
+
+    .monitorOuter,
+    .deskArea,
+    .sidePanel {
+        transform: none;
+    }
+
+    .screenInner {
+        max-height: unset;
+    }
+
+    .deskArea {
+        justify-content: center;
+    }
+
+    .sidePanel {
+        width: 100%;
+    }
+}

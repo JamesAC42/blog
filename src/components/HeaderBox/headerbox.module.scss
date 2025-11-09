@@ -1,0 +1,114 @@
+/* header styles */
+
+.headerContent {
+    position:relative;
+    box-shadow:0 0 10px 5px rgba(153, 146, 255, 0.719);
+
+    background:rgb(35, 6, 252);
+    background:rgb(13, 5, 72);
+    background: linear-gradient(120deg, #081049, #492fa6, #63beef);
+        
+    .headerContentInner {
+        position:relative;
+        z-index:3;
+        padding:1rem;
+
+        .headerTitle {
+            background: linear-gradient(90deg, #4ad5ff, #8f6fff, #3aa4ff);
+            background: linear-gradient(90deg, #4ad5ff, #beacff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            width:fit-content;
+            text-shadow: 0 0 20px rgba(74, 169, 255, 0.4);
+        }
+    }
+
+    .backgroundContainer {
+        position:absolute;
+        top:0;
+        right:0;
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        img {
+            position:absolute;
+            right:0;
+            top:50%;
+            transform:translate(0%, -30%) rotate(50deg);
+            width:500px;
+            height:auto;
+        }
+    }
+}
+
+.headerTitle {
+    font-family: var(--font-deadcrt);
+    font-size: 2rem;
+    line-height: 1;
+    margin: 0;
+    letter-spacing: 0.05em;
+}
+
+.headerSubtitle {
+    margin:0;
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+    padding-left:0.2rem;
+
+    .headerSubtitleText {
+        display:inline-block;
+        font-size:0.8rem;
+        font-family: var(--font-pixel-mix);
+        font-weight: 700;
+        color:var(--color-accent-bright);
+        color: #cabeff;
+        text-shadow:0 0 8px rgba(199, 189, 255, 0.45);
+        margin-top:1rem;
+    }
+
+    .headerSubtitleText2 {
+        font-family: var(--font-pixel-mix);
+        font-weight: 700;
+        font-size:0.9rem;
+        color:var(--color-accent);
+        color: #85a3ff;
+        margin-top:0.8rem;
+        text-shadow:0 0 8px rgba(126, 92, 255, 0.4);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform:rotate(10deg) scale(1);
+    }
+    50%  {
+        transform:rotate(-10deg) scale(1.2);
+    }
+    100% {
+        transform:rotate(10deg) scale(1);
+    }
+}
+
+.headerDecorTopRight,
+.headerDecorBottomLeft {
+    position: absolute;
+    z-index: 1000;
+
+    animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+.headerDecorTopRight {
+    top: -6rem;
+    right: -2rem;
+    transform: rotate(-10deg);
+
+    img {
+        height:200px;
+        width:200px;
+    }
+}
+.headerDecorBottomLeft {
+    bottom: -1rem;
+    left: -0.5rem;
+    transform: rotate(8deg);
+}

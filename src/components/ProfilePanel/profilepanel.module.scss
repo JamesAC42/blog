@@ -1,0 +1,51 @@
+
+.aboutMe {
+    text-align:center;
+    padding:0 1rem;
+    .profilePictureContainer {
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        margin-top:1rem;
+
+        img {
+            width:14rem;
+            height:auto;
+            border-radius:0.5rem;
+            box-shadow:0 5px 10px rgba(152, 126, 255, 0.591);
+        }
+        margin-bottom:1rem;
+    }
+
+    p {
+        font-size:1rem;
+        font-family: var(--font-pixel-mix);
+        line-height:1.3;
+
+        &.hi {
+            text-align:center;
+            font-size:1rem;
+            margin-top:1rem;
+        }
+
+        &.subHeaderText {
+            font-size:0.8rem;
+            color:#b5b1eb;
+            margin-top:1rem;
+        }
+
+        &.languages {
+            font-size:0.8rem;
+            color:#8680be;
+            margin-top:1rem;
+        }
+
+        &.flags {
+            margin:0.5rem 0 1rem 0;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            gap:0.5rem;
+        }
+    }
+}

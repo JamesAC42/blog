@@ -1,0 +1,345 @@
+.loadingContainer {
+    position: fixed;
+    top:0;
+    left:0;
+    height:100dvh;
+    width:100dvw;
+    background:#050a1f;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-family: var(--font-pixel-mix);
+    color:var(--color-text-primary);
+    text-shadow:0 0 8px rgba(63, 208, 255, 0.4);
+    .loadingImage {
+        padding:1rem;
+
+        img {
+            width:300px;
+            height:auto;
+        }
+    }
+}
+
+.lainImage, .mikuImage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 2rem / 3.2rem;
+    overflow: hidden;
+    background: #040712;
+    box-shadow:
+        0 18px 48px rgba(20, 36, 94, 0.45),
+        inset 0 0 42px rgba(6, 10, 28, 0.85),
+        inset 0 0 6px rgba(126, 92, 255, 0.35);
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: -4%;
+        border-radius: 2.4rem / 3.6rem;
+        background:
+            radial-gradient(120% 120% at 50% 45%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.55) 70%),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.06));
+        opacity: 0.4;
+        pointer-events: none;
+        mix-blend-mode: screen;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow:
+            inset 0 0 70px rgba(0, 0, 0, 0.6),
+            inset 0 0 18px rgba(24, 32, 78, 0.55);
+        pointer-events: none;
+    }
+}
+
+.mikuImage {
+    aspect-ratio: 24 / 9;
+    border-radius: 4rem / 12rem;
+}
+
+.lainPhoto, .mikuPhoto {
+    position: absolute !important;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.05) contrast(1.08) brightness(0.94);
+}
+
+.mikuPhoto {
+    &::before {
+        content: "";
+        position: absolute;
+        inset: -20%;
+        border-radius: 2.4rem / 3.6rem;
+        background:
+            radial-gradient(120% 120% at 50% 45%, rgba(255, 255, 255, 0.795) 0%, rgba(0, 0, 0, 0.92) 70%),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.735),rgba(0, 0, 0, 0.731)), rgba(255, 255, 255, 0.06);
+        opacity: 1;
+        pointer-events: none;
+        mix-blend-mode: screen;
+    }
+    box-shadow:
+        0 18px 48px rgba(20, 36, 94, 0.45),
+        inset 0 0 100px rgba(6, 10, 28, 0.85),
+        inset 10px 10px 15px 6px rgba(127, 92, 255, 0.95);
+
+}
+
+.lainOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    mix-blend-mode: lighten;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.05) 0px,
+            rgba(255, 255, 255, 0.05) 2px,
+            transparent 2px,
+            transparent 4px
+        );
+        opacity: 0.2;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.15), transparent 55%);
+        opacity: 0.25;
+        //animation: welcomePulse 4s ease-in-out infinite;
+    }
+
+    .blinker {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        width:3rem;
+        height:100%;
+        .blinkerInner {
+            position:relative;
+            width:3rem;
+            height:4rem;
+            &::before {
+                content: "";
+                position: absolute;
+                width:100%;
+                height:100%;
+                transform:translateY(0.6rem);
+                bottom:0;
+                background:#f9fcffed;
+                border:4px solid white;
+                animation: blinker 1s infinite;
+                box-shadow:0 0 10px 5px rgba(185, 229, 255, 0.788);
+                border-radius:0 10px 0 10px;
+            }
+        }
+    }
+    @keyframes blinker {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+    }
+}
+
+.lainOverlayText {
+    font-family: var(--font-deadcrt);
+    text-transform: uppercase;
+    letter-spacing: 0.4rem;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow:
+        0 0 12px rgba(255, 255, 255, 0.85),
+        0 0 40px rgba(63, 208, 255, 0.8);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
+    //animation: electricFlicker 3.5s steps(3, end) infinite;
+}
+
+@keyframes electricFlicker {
+    0%, 12% { opacity: 0.75; }
+    18% { opacity: 1; }
+    26% { opacity: 0.45; }
+    40% { opacity: 0.9; }
+    55% { opacity: 0.5; }
+    70% { opacity: 1; }
+    85% { opacity: 0.6; }
+    100% { opacity: 0.85; }
+}
+
+@keyframes welcomePulse {
+    0%, 35%, 100% { opacity: 0.25; }
+    15% { opacity: 0.55; }
+    22% { opacity: 0.1; }
+    60% { opacity: 0.45; }
+    75% { opacity: 0.2; }
+}
+
+.elma {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+
+    img {
+        width:100%;
+        height:auto;
+    }
+}
+
+.homeContainerInner {
+    display: flex;
+    flex-direction:column;
+    align-items:stretch;
+    position:relative;
+
+    /* wider center column */
+    max-width: 65rem;
+
+    /* grid of windows with varied spans */
+    .windowsGrid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 1rem;
+        padding:2rem 0;
+    }
+
+    /* span helpers */
+    .spanFull { grid-column: 1 / -1; }
+    .span10 { grid-column: span 10; }
+    .span8 { grid-column: span 8; }
+    .span7 { grid-column: span 7; }
+    .span6 { grid-column: span 6; }
+    .span5 { grid-column: span 5; }
+    .span4 { grid-column: span 4; }
+    .span3 { grid-column: span 3; }
+    .span2 { grid-column: span 2; }
+    
+    .headerContainer {
+        position: relative;
+        .navButtons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            align-items:flex-end;
+    
+            .socialMediaContainer {
+                margin-left:auto;
+    
+                img {
+                    height:32px;
+                    width:auto;
+                    transform:translateY(2px);
+                }
+            }
+        }
+    }
+
+    .musicControls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .galleryGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    .glassCatContainer {
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        position:relative;
+        overflow:hidden;
+        img {
+            transition:transform 0.2s ease;
+            width:100%;
+            height:auto;
+            transform:translateY(0);
+        }
+
+        &::before {
+            position:absolute;
+            content:"";
+            height:200%;
+            width:50%;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%) rotate(45deg);
+            background:linear-gradient(to bottom, rgba(74, 169, 255, 0.25), rgba(127, 90, 240, 0.12));
+            z-index:1;
+        }
+        @media screen and (max-width: 1200px) {
+            display:none !important;
+        }
+    }
+
+    .paneImage {
+        width:100%;
+        height:auto;
+        max-width:10rem;
+        margin-top:2rem;
+        margin:2rem auto;
+        display:flex;
+        justify-content: center;
+    }
+
+
+    @media screen and (max-width: 1200px) {
+        max-width: 60%;
+        margin-left:0.5rem;
+        
+        .spanFull,
+        .span10,
+        .span8,
+        .span7,
+        .span6,
+        .span5,
+        .span4,
+        .span3,
+        .span2 { grid-column: span 12; }
+
+    }
+}
+
+.hideSmall {
+    display:block;
+    @media screen and (max-width: 1200px) {
+        display:none !important;
+    }
+}
+.showSmall {
+    display:none;
+    @media screen and (max-width: 1200px) {
+        display:block !important;
+    }
+}
+.hideShort {
+    display:block;
+    @media screen and (max-height: 910px) {
+        display:none !important;
+    }
+}

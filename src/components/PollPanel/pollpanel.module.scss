@@ -1,0 +1,32 @@
+.pollFormContainer {
+    background:rgba(26, 38, 96, 0.5);
+    backdrop-filter:blur(10px);
+    padding:1rem;
+    border:1px solid rgba(70, 126, 255, 0.35);
+    font-family: var(--font-pixel-mix);
+
+    font-size:0.9rem;
+    color:var(--color-text-primary);
+    text-shadow:0 0 6px rgba(63, 208, 255, 0.35);
+
+    p {
+        margin-bottom:1rem;
+    }
+
+    .pollForm {
+        display: grid;
+        gap: 0.25rem;
+        label, input {
+            margin:4px 0;
+            cursor: var(--pointer-cursor-url), auto;
+            &:hover {
+                cursor: var(--pointer-cursor-url), auto;
+            }
+        }
+    }
+    .pollButtonContainer {
+        margin-top:1rem;
+        display:flex;
+        gap:0.5rem;
+    }
+}

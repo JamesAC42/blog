@@ -1,0 +1,29 @@
+.footer {
+    position: relative;
+    z-index:-10;
+}
+
+.footerOuter {
+    position: relative;
+    z-index:10;
+    .footerContainer {
+        position: relative;
+        text-align:center;
+        font-family: var(--font-pixel-mix);
+        font-size:0.8rem;
+        color:var(--color-text-muted);
+        line-height:1.5;
+        width:fit-content;
+        margin:0 auto;
+        a {
+            color:var(--color-accent);
+            color: #88d89b;
+            text-decoration:underline;
+            font-weight:700;
+            font-family: var(--font-pixel-mix);
+            font-size:0.8rem;
+            line-height:1.5;
+            cursor:var(--pointer-cursor-url), pointer;
+        }
+    }
+}

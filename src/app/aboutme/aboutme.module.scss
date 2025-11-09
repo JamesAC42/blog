@@ -1,0 +1,84 @@
+.aboutWrapper {
+    background: linear-gradient(135deg, rgba(16, 22, 58, 0.85), rgba(4, 7, 22, 0.92));
+    padding: 1rem;
+    border-radius: 0;
+    border: 2px solid rgba(63, 208, 255, 0.35);
+    box-shadow: 0 0 18px rgba(74, 169, 255, 0.3);
+    margin-top:2rem;
+}
+
+.contentCard {
+    background: linear-gradient(135deg, rgba(20, 27, 70, 0.92), rgba(6, 10, 28, 0.95));
+    border-top: 0.1875rem solid rgba(128, 168, 255, 0.7);
+    border-left: 0.1875rem solid rgba(128, 168, 255, 0.7);
+    border-right: 0.1875rem solid rgba(5, 10, 26, 0.9);
+    border-bottom: 0.1875rem solid rgba(5, 10, 26, 0.9);
+    outline: 0.0625rem solid rgba(93, 118, 255, 0.5);
+    box-shadow: 0.0625rem 0.0625rem 0 0.0625rem rgba(76, 118, 255, 0.3);
+    padding: 1rem;
+    /* clearfix for floated images */
+    &::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+.profileFloat {
+    float: left;
+    margin: 0 4rem 0.5rem 0;
+    margin-right:2rem !important;
+    width: 12rem;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 0.125rem rgba(74, 169, 255, 0.35);
+}
+
+.markdown {
+    /* inherit blog post markdown styles where applicable */
+    img {
+        max-width: 30rem !important;
+        height: auto;
+        display: inline-block;
+        float: right;
+        margin: 0 0 0.5rem 1rem;
+        margin: 1rem 2rem 3rem 2rem !important;
+    }
+}
+
+.floatLeft {
+    float: left !important;
+    margin: 0 1rem 0.5rem 0;
+    max-width: 12rem;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 0.125rem rgba(74, 169, 255, 0.35);
+}
+
+.floatRight {
+    float: right !important;
+    margin: 0 0 0.5rem 1rem;
+    max-width: 12rem;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 0.125rem rgba(74, 169, 255, 0.35);
+}
+
+@media (max-width: 48rem) {
+    .floatLeft, .floatRight, .markdown img {
+        float: none;
+        display: block;
+        margin: 0 0 1rem 0;
+        max-width: 100%;
+    }
+}
+
+.taiyaki {
+    border:none !important;
+    outline:none !important;
+    box-shadow:none !important;
+    width:12rem;
+    height:auto;
+    float:left;
+    margin:2rem 0 !important;
+}

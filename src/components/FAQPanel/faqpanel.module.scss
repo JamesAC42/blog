@@ -1,0 +1,19 @@
+.faqItem {
+    margin-top:1rem;
+    padding:0 0.5rem;
+    h3 {
+        font-family: var(--font-pixel-mix);
+        font-weight:700;
+        font-size:1.2rem;
+        color:var(--color-accent);
+        margin:0;
+        padding:0.25rem 0.5rem;
+        border-bottom:2px dotted rgba(63, 208, 255, 0.4);
+        text-shadow:0 0 6px rgba(126, 92, 255, 0.4);
+    }
+
+    p {
+        font-size:1.1rem;
+        padding:1rem 1rem;
+    }
+}

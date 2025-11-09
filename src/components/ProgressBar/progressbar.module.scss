@@ -1,0 +1,20 @@
+.progressBarContainer {
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    margin: 0.5rem;
+}
+
+.progressBar {
+    flex-grow:1;
+    border:2px solid rgba(128, 168, 255, 0.6);
+    outline:1px solid rgba(63, 95, 214, 0.5);
+    border-radius: 0.5rem;
+    overflow:hidden;
+    background:rgba(10, 16, 38, 0.85);
+    .progressBarFill {
+        height: 1rem;
+        background: linear-gradient(135deg, rgba(63, 208, 255, 0.8), rgba(126, 92, 255, 0.8));
+        border-radius: 0.5rem;
+    }
+}

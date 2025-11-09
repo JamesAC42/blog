@@ -1,0 +1,56 @@
+.tableScroll {
+    overflow-x: auto;
+    background: rgba(8, 13, 34, 0.7);
+    border: 1px solid rgba(70, 126, 255, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+}
+
+.coverUploadRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.uploadButtonLabel {
+    display: inline-block;
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.4rem;
+    border: 1px solid rgba(70, 126, 255, 0.45);
+    background: linear-gradient(135deg, rgba(14, 20, 58, 0.95), rgba(6, 10, 28, 0.95));
+    color: var(--color-text-primary);
+    font-family: var(--font-pixel-mix);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: var(--pointer-cursor-url), pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        border-color: rgba(63, 208, 255, 0.6);
+        box-shadow: 0 0 12px rgba(63, 208, 255, 0.25);
+    }
+}
+
+.hiddenFileInput {
+    display: none;
+}
+
+.previewToggleRow {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin: 0.75rem 0;
+}
+
+.markdownEditorTextarea {
+    min-height: 22rem;
+}
+
+.markdownPreviewWindow {
+    padding: 1rem;
+    background: rgba(10, 16, 38, 0.78);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(70, 126, 255, 0.3);
+    box-shadow: inset 0 0 0 1px rgba(12, 22, 60, 0.45);
+}

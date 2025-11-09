@@ -1,0 +1,51 @@
+
+/* Small-screen blocking overlay */
+.smallScreenOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100dvh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2147483647;
+    background: rgba(255, 247, 250, 0.904);
+    text-align: center;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+    font-family: var(--font-nunito);
+    box-sizing: border-box;
+}
+
+.smallScreenOverlayBox {
+    max-width: 20rem;
+    width: 100%;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    margin: auto;
+}
+
+.screenImages {
+    img:first-child {
+        transform:rotateY(180deg);
+    }
+}
+
+.smallScreenOverlay h1 {
+    font-size: 1.5rem;
+    margin: 1rem 0 1rem 0;
+}
+
+.smallScreenOverlay p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+@media (max-width: 64rem) {
+    .smallScreenOverlay {
+        display: flex;
+    }
+}
