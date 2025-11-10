@@ -7,12 +7,13 @@
     display: flex;
     justify-content: center;
     overflow-y: auto;
-    background:
-        linear-gradient(180deg, rgba(3, 6, 20, 0.88) 0%, rgba(3, 6, 20, 0.7) 35%, rgba(3, 6, 20, 0.92) 100%),
-        url("../../assets/images/backgrounds/background.jpg");
-    background-size: cover;
-    background-position: bottom center;
-    background-repeat: no-repeat;
+    background: rgb(2, 3, 8);
+    // background:
+    //     linear-gradient(180deg, rgba(3, 6, 20, 0.88) 0%, rgba(3, 6, 20, 0.7) 35%, rgba(3, 6, 20, 0.92) 100%),
+    //     url("../../assets/images/backgrounds/background.jpg");
+    // background-size: cover;
+    // background-position: bottom center;
+    // background-repeat: no-repeat;
 }
 
 .adminContainer {

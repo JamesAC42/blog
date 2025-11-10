@@ -96,6 +96,9 @@
         text-decoration:none;
         position:relative;
         padding-bottom:2px;
+        display:inline-flex;
+        gap:0.3rem;
+        align-items:center;
 
         &::after {
             content:"";
@@ -115,6 +118,10 @@
             transform:scaleX(1);
         }
     }
+}
+
+.linkIcon {
+    color:var(--color-text-muted);
 }
 
 .actions {

@@ -17,6 +17,7 @@ export default function AdminIndexPage() {
           <li><Link href="/admin/results">View results</Link></li>
           <li><Link href="/admin/blog">Manage blog</Link></li>
           <li><Link href="/admin/diary">Manage diary</Link></li>
+          <li><Link href="/admin/portfolio">Manage projects</Link></li>
           <li><Link href="/admin/scrapbook">Manage scrapbook</Link></li>
         </ul>
       </div>

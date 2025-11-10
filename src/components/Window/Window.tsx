@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "../Button/Button";
 import styles from "./window.module.scss";
 

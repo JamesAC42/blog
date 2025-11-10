@@ -5,10 +5,7 @@ import { revalidateTag } from "next/cache";
 export async function GET(_: Request, context: { params: Promise<{ key: string }> }) {
   const { key } = await context.params;
   const item = await prisma.settingsKV.findUnique({ where: { key } });
-  if (!item) {
-    return new NextResponse("Not Found", { status: 404 });
-  }
-  return NextResponse.json(item.value);
+  return NextResponse.json(item?.value ?? {});
 }
 
 export async function PUT(request: Request, context: { params: Promise<{ key: string }> }) {
@@ -23,6 +20,9 @@ export async function PUT(request: Request, context: { params: Promise<{ key: st
     revalidateTag("homepage");
     if (key === "profile") {
       revalidateTag("profile");
+    }
+    if (key === "portfolio") {
+      revalidateTag("portfolio");
     }
     return new NextResponse(null, { status: 204 });
   } catch {

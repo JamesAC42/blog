@@ -46,6 +46,7 @@ import { BlogPanel, IBlogPanelProps } from "@/components/BlogPanel/BlogPanel";
 import { StatsPanel } from "@/components/StatsPanel/StatsPanel";
 import HeaderBox from "@/components/HeaderBox/HeaderBox";
 import { Footer } from "@/components/Footer/Footer";
+import { FavoritesPanel, IFavoritesPanelProps } from "@/components/FavoritesPanel/FavoritesPanel";
 
 interface HomeState {
   profile: IProfilePanelProps;
@@ -54,6 +55,7 @@ interface HomeState {
   faq: IFAQPanelProps;
   gallery: IGalleryPreviewProps;
   todo: ITodoPanelProps;
+  favorites: IFavoritesPanelProps;
   blog: IBlogPanelProps;
   quiz: IQuizProps;
   survey: ISurveyProps;
@@ -137,7 +139,7 @@ export default function Home() {
                   </Link>
 
                   <div className={styles.socialMediaContainer}>
-                    <Button small={true} onClick={() => window.open("https://github.com/jamescrovo", "_blank")}>
+                    <Button small={true} onClick={() => window.open("https://github.com/jamesac42", "_blank")}>
                       <Image src={github} alt="github" width={20} height={20} />
                     </Button>
                     <Button small={true} onClick={() => window.open("https://x.com/fifltriggi", "_blank")}>
@@ -172,8 +174,12 @@ export default function Home() {
               </Window>
             </div>
 
-            <div id="journal" className={styles.span8}>
-              <JournalPanel entries={homeData?.journal?.entries ?? []} />
+            <div id="blogpost" className={styles.span8}>
+              <Window header="latest posts" showButtons={true}>
+                <BlogPanel 
+                  recentPosts={homeData?.blog?.recentPosts ?? []} 
+                  popularPosts={homeData?.blog?.popularPosts ?? []} />
+              </Window>
             </div>
 
             <div id="music" className={styles.span4}>
@@ -192,7 +198,13 @@ export default function Home() {
               </div>
             </div>
 
-            <div id="faq" className={styles.spanFull}>
+            <div className={styles.span4}>
+              <Window header="favorites" showButtons={true}>
+                <FavoritesPanel favorites={homeData?.favorites?.favorites ?? []} />
+              </Window>
+            </div>
+
+            <div id="faq" className={styles.span8}>
               <Window header="faq" showButtons={true}>
                 <FAQPanel faqs={homeData?.faq?.faqs ?? []} />
               </Window>
@@ -212,12 +224,8 @@ export default function Home() {
               </Window>
             </div>
 
-            <div id="blogpost" className={styles.span8}>
-              <Window header="latest posts" showButtons={true}>
-                <BlogPanel 
-                  recentPosts={homeData?.blog?.recentPosts ?? []} 
-                  popularPosts={homeData?.blog?.popularPosts ?? []} />
-              </Window>
+            <div id="journal" className={styles.span8}>
+              <JournalPanel entries={homeData?.journal?.entries ?? []} />
             </div>
 
             <div id="portfolio" className={styles.spanFull}>
