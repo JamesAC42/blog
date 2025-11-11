@@ -104,6 +104,14 @@ export const deadCRT = localFont({
   weight: "400",
   style: "normal",
 });
+
+export const miracode = localFont({
+  src: "../assets/fonts/Miracode.ttf",
+  variable: "--font-miracode",
+  display: "swap",
+  weight: "400",
+  style: "normal",
+});
 // Add more font declarations here, e.g.
 // export const anotherFont = localFont({
 //   src: "../assets/fonts/AnotherFont.ttf",

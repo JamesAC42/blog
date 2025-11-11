@@ -35,12 +35,11 @@ export const BlogPanel = (props: IBlogPanelProps) => {
         <div className={`windowContent ${styles.blogPostContainer} scrollArea`}>
             <div className={styles.blogInfo}>
                 <div className={styles.blogCategories}>
-                    <Button text="coding" onClick={() => goToTag("Coding")} />
+                    <Button text="cs" onClick={() => goToTag("CS")} />
                     <Button text="math" onClick={() => goToTag("Math")} />
                     <Button text="music" onClick={() => goToTag("Music")} />
                     <Button text="language" onClick={() => goToTag("Language")} />
                     <Button text="philosophy" onClick={() => goToTag("Philosophy")} />
-                    <Button text="religion" onClick={() => goToTag("Life")} />
                 </div>
 
                 </div>

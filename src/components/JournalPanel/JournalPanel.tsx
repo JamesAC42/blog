@@ -51,13 +51,9 @@ export const JournalPanel = (props: IJournalPanelProps) => {
                                 </div>
                             </div>
                             <div className={styles.diaryButtonContainer}>
-                                <Link href={`/diary/${entry.slug || entry.id}`}>
+                                <Link href={`/journal/${entry.slug || entry.id}`}>
                                 <Button small text="Read more" />
                                 </Link>
-                            </div>
-
-                            <div className={styles.diaryStickerContainer}>
-                                <StickerContainer blogId={entry.id} />
                             </div>
                         </div>
                     ))

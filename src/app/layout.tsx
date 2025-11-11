@@ -14,7 +14,8 @@ import {
   chalktastic,
   chewy,
   sourGummy,
-  deadCRT
+  deadCRT,
+  miracode
 } from "@/styles/fonts";
 
 export const metadata: Metadata = {
@@ -43,7 +44,8 @@ const fonts = [
   chalktastic,
   chewy,
   sourGummy,
-  deadCRT
+  deadCRT,
+  miracode
 ];
 
 export default function RootLayout({

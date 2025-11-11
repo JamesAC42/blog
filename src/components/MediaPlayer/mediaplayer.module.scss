@@ -1,3 +1,18 @@
+.albumCover {
+    width:100%;
+    height:auto;
+    display:flex;
+    justify-content: center;
+    margin-top:0.3rem;
+    margin-bottom:0.5rem;
+}
+
+.albumCover img {
+    width:100%;
+    height:auto;
+    border-radius:0.3rem;
+}
+
 .mediaPlayer {
     font-family: var(--font-nunito);
     background: linear-gradient(135deg, rgba(16, 26, 72, 0.92), rgba(6, 10, 28, 0.95));

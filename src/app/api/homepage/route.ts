@@ -140,6 +140,7 @@ export async function GET() {
     poll: pollPayload,
     todo: kv["todo"] ?? { todos: [] },
     blog: { recentPosts, popularPosts },
+    journal: { entries: diaryEntries },
     diary: { entries: diaryEntries },
     quiz: quizPayload,
     survey: surveyPayload,

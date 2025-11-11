@@ -4,10 +4,12 @@ import styles from "./screenoverlay.module.scss";
 
 import monitor from "@/assets/images/icons/monitor.png";
 import laptop from "@/assets/images/icons/laptop.png";
-import sadKitty from "@/assets/images/sadhellokitty.png";
+import oop from "@/assets/images/oop.jpg";
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+
+import { Window } from "../Window/Window";
 
 export const ScreenOverlay = () => {
     const pathname = usePathname();
@@ -25,7 +27,7 @@ export const ScreenOverlay = () => {
               <Image src={laptop} alt="screen images" width={100} height={100} />
             </div>
             <h1>Desktop/Laptop Only</h1>
-            <Image src={sadKitty} alt="sad kitty" width={100} height={100} />
+            <Image className={styles.oopImage} src={oop} alt="oop" width={540} height={405} />
             <p>
               This site is optimized for desktop and laptop resolutions.
               Please visit on a larger screen to continue.

@@ -11,8 +11,6 @@ import rehypeRaw from "rehype-raw";
 import markdownStyles from "@/styles/blogpostmarkdown.module.scss";
 import { StickerContainer } from "@/components/StickerContainer/StickerContainer";
 import Link from "next/link";
-import Image from "next/image";
-import keyboard from "@/assets/images/diary/keyboardtransparent.png";
 
 type DiaryEntry = {
   title: string;
@@ -42,6 +40,20 @@ export default function DiaryEntryPage() {
   const [entry, setEntry] = useState<DiaryEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const asciiSidePanel = [
+    [
+      "      _",
+      "  ___| |___  _ __",
+      " / _ \\ / _ \\| '_ \\ ",
+      "|  __/| (_) | | | |",
+      " \\___| \\___/|_| |_|",
+    ].join("\n"),
+    [
+      " /\\_/\\",
+      "( o.o )  feed the terminal cat",
+      " > ^ <   with new logs",
+    ].join("\n"),
+  ];
 
   useEffect(() => {
     if (!slug) {
@@ -80,6 +92,21 @@ export default function DiaryEntryPage() {
     };
   }, [slug]);
 
+  const lineCount = entry?.content ? entry.content.split("\n").length : 12;
+  const safeLineCount = Math.min(Math.max(lineCount, 12), 400);
+  const lineNumbers = Array.from({ length: safeLineCount }, (_, idx) => idx + 1);
+  const asciiColumn = [
+`  _   _                  _ 
+ | \\ | | ___  _ __   ___| |
+ |  \\| |/ _ \\| '_ \\ / _ \\ |
+ | |\\  | (_) | | | |  __/ |
+ |_| \\_|\\___/|_| |_|\\___|_|`,
+` __  __     _        _        
+|  \\/  |___| |_ __ _| |__ ___ 
+| |\\/| / -_)  _/ _\` | '_ (_-<
+|_|  |_\\___|\\__\\__,_|_.__/__/`,
+  ];
+
   return (
     <PageWrapper>
       <div className={styles.entryPage}>
@@ -88,56 +115,66 @@ export default function DiaryEntryPage() {
             <Button text="Back to all" small />
           </Link>
         </div>
-        <div className={styles.scene}>
-          <div className={styles.monitorZone}>
-            <div className={styles.monitorOuter}>
-              <div className={styles.monitorTop}>
-                <span className={styles.monitorBrand}>IBM</span>
-                <div className={styles.monitorControls}>
-                  <span className={styles.monitorControl} aria-hidden />
-                  <span className={styles.monitorControl} aria-hidden />
-                  <span className={styles.monitorControl} aria-hidden />
-                </div>
-              </div>
-              <div className={styles.monitorScreen}>
-                <div className={styles.screenInner}>
-                  {loading && <p className={`${markdownStyles.postContent} ${styles.screenMessage}`}>Loading...</p>}
-                  {!loading && error && <p className={`${markdownStyles.postContent} ${styles.screenMessage}`}>{error}</p>}
-                  {!loading && !error && entry && (
-                    <div className={styles.screenContent}>
-                      <div className={styles.entryHeader}>
-                        <h1 className={styles.entryTitle}>{entry.title}</h1>
-                        <div className={styles.entryMeta}>
-                          <span className={styles.metaItem}>
-                            {formatDateTime(entry.publishedAt ?? entry.createdAt)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className={`${markdownStyles.postContent} ${styles.entryBody}`}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                          {entry.content}
-                        </ReactMarkdown>
-                      </div>
+        <div className={styles.termLayout}>
+          <section className={styles.termWindow}>
+            <div className={styles.windowChrome}>
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className={styles.statusBar}>
+              <span>nvim journal/{slug || "entry"}.md</span>
+              <span>{entry ? formatDateTime(entry.publishedAt ?? entry.createdAt) : ""}</span>
+            </div>
+            <div className={styles.editorBody}>
+              <pre className={styles.lineNumbers}>
+                {lineNumbers.map((num) => (
+                  <span key={num}>{String(num).padStart(3, " ")} </span>
+                ))}
+              </pre>
+              <div className={styles.bodyScroll}>
+                {loading && <p className={styles.editorState}>loading entry...</p>}
+                {!loading && error && <p className={styles.editorState}>{error}</p>}
+                {!loading && !error && entry && (
+                  <div className={styles.entryContent}>
+                    <div className={styles.entryHeader}>
+                      <div className={styles.entryMetaBadge}>journal/{slug || "entry"}.md</div>
+                      <h1 className={styles.entryTitle}>{entry.title}</h1>
                     </div>
-                  )}
-                </div>
+                    <div className={`${markdownStyles.postContent} ${styles.entryBody}`}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                        {entry.content}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className={styles.asciiColumn}>
+                {asciiColumn.map((art, idx) => (
+                  <pre key={idx} aria-hidden>
+                    {art}
+                  </pre>
+                ))}
               </div>
             </div>
-            <div className={styles.deskArea} aria-hidden>
-              <div className={styles.keyboardWrap}>
-                <Image src={keyboard} alt="mechanical keyboard" className={styles.keyboardImage} />
-              </div>
-              <div className={styles.mouse}>
-                <span className={styles.mouseWheel} />
+            <div className={styles.modeLine}>
+              {loading ? ":read !fetch_entry" : error ? ":q!" : "-- NORMAL --"}
+            </div>
+          </section>
+          <aside className={styles.sideRail}>
+            <div className={styles.sideRailCard}>
+              <div className={styles.sideRailHeader}>ascii signals</div>
+              <div className={styles.asciiStack}>
+                {asciiSidePanel.map((art, idx) => (
+                  <pre key={idx} aria-hidden>
+                    {art}
+                  </pre>
+                ))}
               </div>
             </div>
-          </div>
-          <aside className={styles.sidePanel}>
-            <div className={styles.sidePanelContent}>
-              <div className={styles.sidePanelHeader}>Signal Board</div>
-              <p className={styles.sidePanelNote}>Loop in your favorite gifs or widgets here soon.</p>
-              <div className={styles.sidePanelDivider} />
-              <div className={styles.stickerWrap}>
+            <div className={styles.sideRailCard}>
+              <div className={styles.sideRailHeader}>sticker matrix</div>
+              <div className={styles.stickerPad}>
                 <StickerContainer blogId={slug} />
               </div>
             </div>

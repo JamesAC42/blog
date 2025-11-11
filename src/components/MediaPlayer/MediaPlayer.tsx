@@ -8,6 +8,8 @@ import muteIcon from '@/assets/images/mediaplayer/mute.png';
 import volumeIcon from '@/assets/images/mediaplayer/volume.png';
 import stopIcon from '@/assets/images/mediaplayer/stop.png';
 
+import albumCover from '@/assets/images/homepage/elma.jpg';
+
 import Image from 'next/image';
 
 export const MediaPlayer = () => {
@@ -66,51 +68,56 @@ export const MediaPlayer = () => {
     };
 
     return (
-        <div className={styles.mediaPlayer}>
-            <audio ref={audioRef} src="/rainwithcapuccino.mp3" />
-            
-            <div className={styles.songInfo}>
-                <strong>rain with capuccino</strong> - yorushika
+        <>
+            <div className={styles.albumCover}>
+                <Image src={albumCover} alt="album cover" width={100} height={100} />
             </div>
-
-            <div className={styles.controls}>
-                <div className={styles.seekBar}>
-                    <div className={styles.timeDisplay}>
-                        {formatTime(currentTime)} / {formatTime(duration)}
-                    </div>
-                    <input 
-                        type="range"
-                        min={0}
-                        max={duration}
-                        value={currentTime}
-                        onChange={handleSeek}
-                    />
+            <div className={styles.mediaPlayer}>
+                <audio ref={audioRef} src="/rainwithcapuccino.mp3" />
+                
+                <div className={styles.songInfo}>
+                    <strong>rain with capuccino</strong> - yorushika
                 </div>
 
-                <div className={styles.playbackControls}>
-                    <Button small onClick={playAudio}>
-                        <Image src={playIcon} alt="play" className={styles.playButton} width={24} height={24} />
-                    </Button>
-                    <Button small onClick={() => stopAudio(false)    }>
-                        <Image src={pauseIcon} alt="pause" className={styles.playButton} width={24} height={24} />
-                    </Button>
-                    <Button small onClick={() => stopAudio(true)}>
-                        <Image src={stopIcon} alt="stop" className={styles.playButton} width={24} height={24} />
-                    </Button>
-
-                    <div className={styles.volumeControl}>
-                        <Image src={volumeLevel === 0 ? muteIcon : volumeIcon} alt="volume" width={24} height={24} />
-                        <input
+                <div className={styles.controls}>
+                    <div className={styles.seekBar}>
+                        <div className={styles.timeDisplay}>
+                            {formatTime(currentTime)} / {formatTime(duration)}
+                        </div>
+                        <input 
                             type="range"
                             min={0}
-                            max={1}
-                            step={0.1}
-                            value={volumeLevel}
-                            onChange={handleVolume}
+                            max={duration}
+                            value={currentTime}
+                            onChange={handleSeek}
                         />
+                    </div>
+
+                    <div className={styles.playbackControls}>
+                        <Button small onClick={playAudio}>
+                            <Image src={playIcon} alt="play" className={styles.playButton} width={24} height={24} />
+                        </Button>
+                        <Button small onClick={() => stopAudio(false)    }>
+                            <Image src={pauseIcon} alt="pause" className={styles.playButton} width={24} height={24} />
+                        </Button>
+                        <Button small onClick={() => stopAudio(true)}>
+                            <Image src={stopIcon} alt="stop" className={styles.playButton} width={24} height={24} />
+                        </Button>
+
+                        <div className={styles.volumeControl}>
+                            <Image src={volumeLevel === 0 ? muteIcon : volumeIcon} alt="volume" width={24} height={24} />
+                            <input
+                                type="range"
+                                min={0}
+                                max={1}
+                                step={0.1}
+                                value={volumeLevel}
+                                onChange={handleVolume}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };

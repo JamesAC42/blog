@@ -152,6 +152,15 @@
                 border-radius:0 10px 0 10px;
             }
         }
+
+        @media screen and (max-width: 1200px) {
+            width:2rem;
+            height:100%;
+            .blinkerInner {
+                width:2rem;
+                height:3rem;
+            }
+        }
     }
     @keyframes blinker {
         0% {
@@ -174,6 +183,10 @@
         0 0 40px rgba(63, 208, 255, 0.8);
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6));
     //animation: electricFlicker 3.5s steps(3, end) infinite;
+
+    @media screen and (max-width: 1200px) {
+        font-size: clamp(1.5rem, 4vw, 3rem);
+    }
 }
 
 @keyframes electricFlicker {
@@ -297,16 +310,18 @@
         }
     }
 
-    .paneImage {
-        width:100%;
-        height:auto;
-        max-width:10rem;
-        margin-top:2rem;
-        margin:2rem auto;
+    .panelImages {
         display:flex;
-        justify-content: center;
+        flex-direction:column;
+        gap:1rem;
+        .paneImage {
+            width:100%;
+            height:auto;
+            max-width:10rem;
+            display:flex;
+            justify-content: center;
+        }
     }
-
 
     @media screen and (max-width: 1200px) {
         max-width: 60%;

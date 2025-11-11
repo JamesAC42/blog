@@ -4,15 +4,6 @@ import { useEffect, useState } from "react";
 import styles from "./journal.module.scss";
 import { PageWrapper } from "@/components/PageWrapper/PageWrapper";
 import HeaderBox from "@/components/HeaderBox/HeaderBox";
-import { Button } from "@/components/Button/Button";
-import Image from "next/image";
-
-import swirl from "@/assets/images/stickers/_swirl.png";
-import star from "@/assets/images/stickers/_star.png";
-import flower from "@/assets/images/stickers/_flower.png";
-import korilakuma from "@/assets/images/stickers/_korilakuma.png";
-
-import sushi from "@/assets/images/diary/sushi.png";
 import Link from "next/link";
 import { Footer } from "@/components/Footer/Footer";
 
@@ -140,105 +131,140 @@ export default function Diary() {
     return true;
   });
 
+  const formatMonthLabel = (month: number, long?: boolean) =>
+    new Date(0, month - 1).toLocaleString("default", { month: long ? "long" : "short" });
+
+  const currentFilterLabel = selectedYear
+    ? selectedMonth
+      ? `${selectedYear}/${formatMonthLabel(selectedMonth)}`
+      : `${selectedYear}`
+    : "all entries";
+
+  const directoryTotals: Record<number, number> = Object.keys(index).reduce((acc, key) => {
+    const year = Number(key);
+    acc[year] = Object.values(index[year]).reduce((sum, value) => sum + value, 0);
+    return acc;
+  }, {} as Record<number, number>);
+
+  const filePerms = "-rw-r--r--";
+  const dirPerms = "drwxr-xr-x";
+
   return (
     <PageWrapper>
       <div className={styles.diaryPage}>
         <HeaderBox header="Journal" showFlashy={false} />
-        <div className={styles.diaryLayout}>
-          <aside className={styles.sidebar}>
-            <div className={styles.compHeader}>
-              <div className={styles.compHeaderRow}>
-                <div className={styles.compHeaderTitle}>CLASS SCHEDULE</div>
-              </div>
-              <div className={styles.compHeaderRow}>
-                <div className={styles.compHeaderText}>NAME</div>
-                <div className={styles.compHeaderLine}></div>
-                <div className={styles.compHeaderText}>ADDRESS</div>
-                <div className={styles.compHeaderLine}></div>
-              </div>
-              <div className={styles.compHeaderRow}>
-                <div className={styles.compHeaderText}>SCHOOL</div>
-                <div className={styles.compHeaderLine}></div>
-                <div className={styles.compHeaderText}>CLASS</div>
-                <div className={styles.compHeaderLine}></div>
-              </div>
+        <div className={styles.terminalGrid}>
+          <section className={styles.directoryTerminal}>
+            <div className={styles.windowChrome}>
+              <span />
+              <span />
+              <span />
             </div>
-            <div className={styles.stickyBox}>
-              <div className={styles.filterHeader}>
-                <h3>Browse</h3>
-                <Button small text="All entries" onClick={clearFilter} />
-              </div>
-              <ul className={`${styles.yearList} scrollArea`}>
-                {Object.keys(index)
-                  .map((y) => parseInt(y, 10))
-                  .sort((a, b) => b - a)
-                  .map((year) => (
-                    <li key={year}>
-                      <div className={styles.yearRow}>
+            <div className={styles.promptLine}>
+              <span className={styles.promptUser}>visitor</span>
+              <span className={styles.promptPath}>~/journal</span>
+              <span className={styles.promptCommand}>tree -L 2</span>
+            </div>
+            <ul className={`${styles.directoryList} scrollArea`}>
+              {Object.keys(index)
+                .map((y) => parseInt(y, 10))
+                .sort((a, b) => b - a)
+                .map((year) => {
+                  const months = Object.keys(index[year])
+                    .map((m) => parseInt(m, 10))
+                    .sort((a, b) => b - a);
+                  return (
+                    <li key={year} className={styles.directoryYear}>
+                      <div className={styles.dirRow}>
+                        <span className={styles.dirPerms}>{dirPerms}</span>
                         <button
-                          className={`${styles.yearBtn} ${selectedYear === year && !selectedMonth ? styles.active : ""}`}
+                          className={`${styles.dirButton} ${selectedYear === year && !selectedMonth ? styles.active : ""}`}
                           onClick={() => handleSelectYear(year)}
                         >
-                          {year}
+                          {year}/
                         </button>
-                        <button className={styles.collapseBtn} onClick={() => toggleYearCollapsed(year)}>
+                        <span className={styles.dirMeta}>{String(directoryTotals[year] || 0).padStart(2, "0")} files</span>
+                        <button className={styles.toggleBtn} onClick={() => toggleYearCollapsed(year)} aria-label="Toggle months">
                           {collapsedYears[year] ? "+" : "−"}
                         </button>
                       </div>
                       {!collapsedYears[year] && (
                         <ul className={styles.monthList}>
-                          {Object.keys(index[year])
-                            .map((m) => parseInt(m, 10))
-                            .sort((a, b) => b - a)
-                            .map((month) => (
-                              <li key={month}>
+                          {months.map((month, idx) => {
+                            const branch = idx === months.length - 1 ? "└──" : "├──";
+                            return (
+                              <li key={month} className={styles.monthRow}>
                                 <button
-                                  className={`${styles.monthBtn} ${selectedYear === year && selectedMonth === month ? styles.active : ""}`}
+                                  className={`${styles.monthBtn} ${
+                                    selectedYear === year && selectedMonth === month ? styles.active : ""
+                                  }`}
                                   onClick={() => handleSelectMonth(year, month)}
                                 >
-                                  {new Date(0, month - 1).toLocaleString('default', { month: 'long' })} ({index[year][month]})
+                                  <span className={styles.branch}>{branch}</span>
+                                  <span className={styles.monthName}>{formatMonthLabel(month)}/</span>
+                                  <span className={styles.dirMeta}>{index[year][month]} logs</span>
                                 </button>
                               </li>
-                            ))}
+                            );
+                          })}
                         </ul>
                       )}
                     </li>
-                  ))}
-              </ul>
+                  );
+                })}
+            </ul>
+            <div className={styles.commandFooter}>
+              <button onClick={clearFilter} className={styles.commandButton}>
+                ↺ reset filters
+              </button>
+              <span className={styles.commandHint}>current filter: {currentFilterLabel}</span>
             </div>
-            <div className={styles.compFooter}>
-              <div className={styles.dimensions}>
-              9<sup>1</sup><span>&frasl;</span><sub>4</sub>in. x 7<sup>1</sup><span>&frasl;</span><sub>2</sub>in.
-              </div>
-              <div className={styles.madeInJapan}>MADE IN JAPAN</div>
+          </section>
+          <section className={styles.entriesTerminal}>
+            <div className={styles.windowChrome}>
+              <span />
+              <span />
+              <span />
             </div>
-          </aside>
-          <main className={styles.contentPaperContainer}>
-            <div className={styles.contentPaper}>
-              {loading && <div className={styles.loadingState}>Loading entries...</div>}
-              {!loading && error && <div className={styles.errorState}>{error}</div>}
-              {!loading && !error && filtered.length === 0 && (
-                <div className={styles.emptyState}>No entries yet!</div>
-              )}
+            <div className={styles.promptLine}>
+              <span className={styles.promptUser}>visitor</span>
+              <span className={styles.promptPath}>~/journal</span>
+              <span className={styles.promptCommand}>
+                {selectedYear || selectedMonth ? `cat entries.log | grep "${currentFilterLabel}"` : "cat entries.log"}
+              </span>
+            </div>
+            <div className={`${styles.entriesFeed} scrollArea`}>
+              {loading && <div className={styles.stateMessage}>loading entries...</div>}
+              {!loading && error && <div className={styles.stateMessage}>{error}</div>}
+              {!loading && !error && filtered.length === 0 && <div className={styles.stateMessage}>no entries found</div>}
               {!loading && !error && filtered.length > 0 && (
-                <ul className={`${styles.bulletList} scrollArea`}>
+                <ul className={styles.entriesList}>
                   {filtered.map((entry) => {
                     const date = formatDate(entry.publishedAt);
                     return (
-                      <li key={entry.id}>
+                      <li key={entry.id} className={styles.entryRow}>
                         <Link href={`/journal/${entry.slug}`} className={styles.entryLink}>
-                          <button className={styles.entryLink}>
-                            [{date}] - &quot;{entry.title}&quot;
-                          </button>
+                          <span className={styles.filePerms}>{filePerms}</span>
+                          <span className={styles.entryDate}>{date || "----"}</span>
+                          <span className={styles.entryTitle}>{entry.title}</span>
                         </Link>
                       </li>
                     );
                   })}
-                  <div className={styles.heightTest}></div>
                 </ul>
               )}
             </div>
-          </main>
+            <div className={styles.asciiFooter}>
+              <pre aria-hidden>
+{`      __ _                 _ 
+ _   _/ _\\ |_ _   _ _ __   | |
+| | | \\ \\| __| | | | '_ \\  | |
+| |_| |\\ \\ |_| |_| | |_) | | |
+ \\__,_\\__/\\__|\\__,_| .__/  |_|
+                   |_|        `}
+              </pre>
+            </div>
+          </section>
         </div>
       </div>
       <br />

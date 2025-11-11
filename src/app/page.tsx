@@ -1,20 +1,16 @@
 "use client";
 
 import styles from "./page.module.scss";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { ProfilePanel } from "@/components/ProfilePanel/ProfilePanel";
 import { Window } from "@/components/Window/Window";
 import { Button } from "@/components/Button/Button";
 
 import Image from "next/image";
 
-import elma from "@/assets/images/homepage/elma.jpg";
 import { Calendar } from "@/components/Calendar/Calendar";
 
-import glasscat from "@/assets/images/homepage/glasscat.png";
 import Anilist from "@/components/Anilist/Anilist";
-import Quiz, { IQuizProps } from "@/components/Quiz/Quiz";
-import Survey, { ISurveyProps } from "@/components/Survey/Survey";
 import PortfolioPanel, { IPortfolioPanelProps } from "@/components/PortfolioPanel/PortfolioPanel";
 import lain from "@/assets/images/homepage/lain.jpg";
 
@@ -27,12 +23,10 @@ import syncing from "@/assets/images/syncing.gif";
 import { VerticalNav } from "@/components/VerticalNav/VerticalNav";
 import Link from "next/link";
 
-import lollipop from "@/assets/images/homepage/lollipop.png";
-import kissu from "@/assets/images/homepage/kissu.png";
-// import sakura from "@/assets/images/sakura.png";
-import icecream from "@/assets/images/homepage/icecream.png";
-
+import mikudisc from "@/assets/images/homepage/mikudisc.png";
 import { MediaPlayer } from "@/components/MediaPlayer/MediaPlayer";
+
+import directory from "@/assets/images/homepage/directory.jpg";
 
 import miku from "@/assets/images/homepage/vaporwavemiku.jpg";
 
@@ -57,8 +51,6 @@ interface HomeState {
   todo: ITodoPanelProps;
   favorites: IFavoritesPanelProps;
   blog: IBlogPanelProps;
-  quiz: IQuizProps;
-  survey: ISurveyProps;
   portfolio: IPortfolioPanelProps | null;
   lastUpdated: string;
 }
@@ -188,14 +180,6 @@ export default function Home() {
                   <MediaPlayer />
                 </div>
               </Window>
-              <br/>
-              <div className={styles.hideSmall}>
-                <Window>
-                  <div className={`windowContent ${styles.elma}`}>
-                    <Image src={elma} alt="elma" width={248} height={247} />
-                  </div>
-                </Window>
-              </div>
             </div>
 
             <div className={styles.span4}>
@@ -262,7 +246,10 @@ export default function Home() {
             </div>
                         
             <div className={styles.span2}>
-              <Image src={kissu} alt="kissu" height={566} width={440} className={styles.paneImage} />
+              <div className={styles.panelImages}>
+                <Image src={mikudisc} alt="kissu" height={736} width={736} className={styles.paneImage} />
+                <Image src={directory} alt="directory" height={909} width={475} className={styles.paneImage} />
+              </div>
             </div>
 
             <div className={styles.spanFull}>
