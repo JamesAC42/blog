@@ -6,10 +6,10 @@ import { Window } from "../Window/Window"
 import styles from "./pagewrapper.module.scss"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import tiktok from "@/assets/images/social media/tiktok.png"
-import instagram from "@/assets/images/social media/instagram.png"
-import xlogo from "@/assets/images/social media/x.png"
-import pinterest from "@/assets/images/social media/pinterest.png"
+import xlogo from "@/assets/images/social media/x.png";
+import email from "@/assets/images/social media/email.png";
+import linkedin from "@/assets/images/social media/linkedin.png";
+import github from "@/assets/images/social media/github.png";
 
 export interface IPageWrapperProps {
     children: React.ReactNode
@@ -58,17 +58,17 @@ export const PageWrapper = ({ children }: IPageWrapperProps) => {
                             Copyright © 2025
                         </div>
                         <div className={styles.socialMedia}>
-                            <a href="https://github.com/jamescrovo" target="_blank" rel="noopener noreferrer">
-                                <Image src={tiktok} alt="github placeholder" />
+                            <a href="https://github.com/jamesac42" target="_blank" rel="noopener noreferrer">
+                                <Image src={github} alt="github placeholder" />
                             </a>
                             <a href="https://www.linkedin.com/in/jamescrovo" target="_blank" rel="noopener noreferrer">
-                                <Image src={instagram} alt="linkedin placeholder" />
+                                <Image src={linkedin} alt="linkedin placeholder" />
                             </a>
-                            <a href="https://twitter.com/jamescrovo" target="_blank" rel="noopener noreferrer">
+                            <a href="https://twitter.com/fifltriggi" target="_blank" rel="noopener noreferrer">
                                 <Image src={xlogo} alt="twitter" />
                             </a>
-                            <a href="https://www.youtube.com/@jamescrovo" target="_blank" rel="noopener noreferrer">
-                                <Image src={pinterest} alt="video placeholder" />
+                            <a href="mailto:jamescrovo450@gmail.com" target="_blank" rel="noopener noreferrer">
+                                <Image src={email} alt="video placeholder" />
                             </a>
                         </div>
                     </div>

@@ -10,6 +10,8 @@ import rehypeRaw from "rehype-raw";
 import markdownStyles from "@/styles/blogpostmarkdown.module.scss";
 import { useEffect, useState } from "react";
 import { Footer } from "@/components/Footer/Footer";
+import Image from "next/image";
+import asciimiku from "@/assets/images/asciimiku.jpg";
 
 export default function AboutMe() {
     const [markdown, setMarkdown] = useState("");
@@ -41,6 +43,15 @@ export default function AboutMe() {
             <HeaderBox header="About Me" subtitle2="" showFlashy={false} />
             <div className={localStyles.aboutWrapper}>
                 <div className={`${localStyles.contentCard} ${markdownStyles.postContent}`}>
+                    <figure className={localStyles.asciiFloat}>
+                        <Image
+                            src={asciimiku}
+                            alt="Ascii art of Hatsune Miku"
+                            width={321}
+                            height={549}
+                            className={localStyles.asciiImage}
+                        />
+                    </figure>
                     {loading && <p>Loading…</p>}
                     {error && <p>{error}</p>}
                     {!loading && !error && (
@@ -50,7 +61,7 @@ export default function AboutMe() {
                             </ReactMarkdown>
                         </div>
                     )}
-                </div>  
+                </div>
             </div>
             <br />
             <Footer />

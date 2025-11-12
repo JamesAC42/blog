@@ -17,6 +17,7 @@ import magazine3 from "@/assets/images/blog/magazine cover 3.jpg";
 
 import calendar from "@/assets/images/icons/calendar.png";
 import eye from "@/assets/images/icons/eye.png";
+import lainfade from "@/assets/images/lainfade.png";
 // removed unused icons
 
 import kumabubble from "@/assets/images/blog/kumabubble.png";
@@ -38,7 +39,6 @@ const PostItem = ({ item, onClick, featured }: { item: BlogListItem; onClick: ()
                 <h3>{item.title}</h3>
                 {item.excerpt && <h4>{item.excerpt}</h4>}
                 <div className={styles.postDate}>
-                    <Image src={calendar} alt="calendar" width={16} height={16} />
                     <span>{item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : ""}</span>
                 </div>
                 
@@ -46,7 +46,6 @@ const PostItem = ({ item, onClick, featured }: { item: BlogListItem; onClick: ()
                 <div className={styles.postDetails}>
                     {typeof item.views === "number" && (
                     <div className={styles.postViews}>
-                        <Image src={eye} alt="eye" width={16} height={16} />
                         <span>{item.views} {item.views === 1 ? "view" : "views"}</span>
                     </div>)}
                     {typeof item.likes === "number" && (
@@ -157,7 +156,7 @@ function BlogContent() {
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     return (
         <PageWrapper>
-            <HeaderBox header="Blog" subtitle2="Find beauty advice, tea party tips, and more! Enjoy~" showFlashy={false}/>
+            <HeaderBox header="Blog" showFlashy={false}/>
 
             <div className={styles.blogSection}>
                 <div className={styles.featuredPosts}>
@@ -173,7 +172,7 @@ function BlogContent() {
                             </Link>
                         )}
                         <div className={styles.kumabubbleContainer}>
-                            <Image src={kumabubble} alt="kumabubble" width={500} height={500} className={styles.kumabubble} />
+                            <Image src={lainfade} alt="lain" width={429} height={414} className={styles.kumabubble} />
                         </div>
                     </div>
                 </div>
@@ -190,7 +189,7 @@ function BlogContent() {
                         </div>
                     </div>
                     <div className={styles.tagsContainer}>
-                        {(["All", "Music", "Art", "Life", "Gyaru", "Language", "Gaming", "Cooking", "Health", "Beauty", "Fashion"]).map((t) => {
+                        {(["All", "CS", "Art", "Math", "Life", "Language", "Cooking", "Philosophy"]).map((t) => {
                             const isAll = t === "All";
                             const tValue = t.toLowerCase();
                             const active = isAll ? activeTags.length === 0 : activeTags.includes(tValue);

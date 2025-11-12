@@ -197,8 +197,6 @@ export default function BlogPost() {
                 ))}
             </div>
             <div className={styles.postContent}>
-                <Image className={styles.tapeTop} src={tape} alt="tape" width={412} height={123} />
-                <Image className={styles.tapeBottom} src={tape} alt="tape" width={412} height={123} />
                 <div className={`${markdownStyles.postContent}`}>
                     {loading && <p>Loading…</p>}
                     {error && <p>{error}</p>}
@@ -211,7 +209,6 @@ export default function BlogPost() {
                     )}
                 </div>
                 <br/>
-                <Image className={styles.helloKittyComputer} src={hellokittycomputer} alt="post image" width={480} height={480} />
             </div>
             <br/>
             <Window header="Comments" showButtons={true}>
@@ -294,9 +291,6 @@ export default function BlogPost() {
                                     } finally { setSubmitting(false); }
                                 }} disabled={submitting || (!isAdmin && !turnstileToken)} />
                             </div>
-                        </div>
-                        <div className={styles.commentsFormImage}>
-                            <Image src={commentBubble} alt="comment bubble" />
                         </div>
                     </div>
                 </div>

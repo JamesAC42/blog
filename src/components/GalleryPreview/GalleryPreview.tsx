@@ -337,11 +337,11 @@ export const GalleryPreview = (props: IGalleryPreviewProps) => {
             </div>
             <div className={styles.actions}>
                 <Button disabled={atLeftEdge} onClick={goToPrev}>
-                    <Image src={previous} alt="previous" />
+                    <Image src={previous} alt="previous" width={20} height={20} />
                 </Button>
                 <Button text="view more" onClick={() => { window.location.href = "/gallery"; }} />
                 <Button disabled={atRightEdge} onClick={goToNext}>
-                    <Image src={next} alt="next" />
+                    <Image src={next} alt="next" width={20} height={20} />
                 </Button>
             </div>
         </>

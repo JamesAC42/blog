@@ -215,7 +215,7 @@ export default function Diary() {
             </ul>
             <div className={styles.commandFooter}>
               <button onClick={clearFilter} className={styles.commandButton}>
-                ↺ reset filters
+                <span className={styles.commandButtonIcon}>↺</span> reset filters
               </button>
               <span className={styles.commandHint}>current filter: {currentFilterLabel}</span>
             </div>
@@ -256,12 +256,7 @@ export default function Diary() {
             </div>
             <div className={styles.asciiFooter}>
               <pre aria-hidden>
-{`      __ _                 _ 
- _   _/ _\\ |_ _   _ _ __   | |
-| | | \\ \\| __| | | | '_ \\  | |
-| |_| |\\ \\ |_| |_| | |_) | | |
- \\__,_\\__/\\__|\\__,_| .__/  |_|
-                   |_|        `}
+              {"<・ )))><<\t<・ )))><<\t<・ )))><<\t<・ )))><< >°))))彡       >°))))彡\n\n (°)#))<< (°)#))<<                 >^)))<～～\n\n≧( ° ° )≦ . . . ≧( ° ° )≦"}
               </pre>
             </div>
           </section>

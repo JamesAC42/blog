@@ -2,10 +2,10 @@
     --default-cursor-url: url('../assets/images/cursors/_default.png');
     --pointer-cursor-url: url('../assets/images/cursors/_pointer.png');
 
-    --color-bg: #030615;
-    --color-surface: rgba(14, 18, 48, 0.92);
-    --color-surface-strong: rgba(20, 27, 70, 0.96);
-    --color-border-light: #7da4ff;
+    --color-bg: #070707;
+    --color-surface: rgba(24, 24, 24, 0.92);
+    --color-surface-strong: rgba(20, 20, 20, 0.96);
+    --color-border-light: #ff7d81;
     --color-border-dark: #050714;
     --color-border-mid: #1a2357;
     --color-shadow: rgba(76, 118, 255, 0.36);
@@ -62,13 +62,18 @@ body {
     border-bottom: 3px solid rgba(5, 10, 26, 0.9);
     border-right: 3px solid rgba(37, 41, 81, 0.9);
     border-bottom: 3px solid rgba(37, 41, 81, 0.9);
+    border-top: 3px solid rgba(183, 175, 255, 0.82);
+    border-left: 3px solid rgba(183, 175, 255, 0.82);
+    border-right: 3px solid rgba(37, 41, 81, 0.9);
+    border-bottom: 3px solid rgba(37, 41, 81, 0.9);
     outline: 1px solid rgba(93, 118, 255, 0.6);
-    box-shadow: 0 0 18px var(--color-shadow);
+    box-shadow: 0 0 5px var(--color-shadow);
     padding: 0;
     background:
         linear-gradient(135deg, rgba(14, 20, 58, 0.92), rgba(5, 9, 32, 0.96));
     background:
         linear-gradient(135deg, rgba(32, 30, 56, 0.92), rgba(11, 10, 14, 0.96));
+    background:#101010;
     color: var(--color-text-primary);
 }
 

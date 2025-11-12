@@ -7,7 +7,7 @@
 .terminalGrid {
     display: grid;
     grid-template-columns: minmax(18rem, 26rem) 1fr;
-    gap: 1.75rem;
+    gap: 1rem;
 
     @media (max-width: 1024px) {
         grid-template-columns: 1fr;
@@ -17,9 +17,9 @@
 .directoryTerminal,
 .entriesTerminal {
     position: relative;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     border: 1px solid rgba(99, 141, 255, 0.25);
-    background: radial-gradient(circle at 20% 20%, rgba(16, 38, 71, 0.9), rgba(2, 5, 18, 0.95));
+    background: radial-gradient(circle at 20% 20%, rgba(15, 15, 15, 0.9), rgba(0, 0, 0, 0.95));
     box-shadow:
         0 1.5rem 3rem rgba(2, 4, 16, 0.65),
         inset 0 0 0 1px rgba(255, 255, 255, 0.02);
@@ -41,15 +41,15 @@
         width: 0.9rem;
         height: 0.9rem;
         border-radius: 50%;
-        background: linear-gradient(145deg, rgba(255, 110, 160, 0.85), rgba(93, 33, 73, 0.85));
+        background: linear-gradient(145deg, rgba(255, 110, 160, 0.85), rgba(176, 47, 133, 0.85));
         box-shadow: inset 0 -0.1rem 0.2rem rgba(0, 0, 0, 0.35);
 
         &:nth-child(2) {
-            background: linear-gradient(145deg, rgba(255, 224, 138, 0.9), rgba(117, 91, 32, 0.85));
+            background: linear-gradient(145deg, rgba(255, 224, 138, 0.9), rgba(188, 148, 54, 0.85));
         }
 
         &:nth-child(3) {
-            background: linear-gradient(145deg, rgba(139, 244, 199, 0.85), rgba(15, 82, 65, 0.85));
+            background: linear-gradient(145deg, rgba(139, 244, 199, 0.85), rgba(32, 142, 114, 0.85));
         }
     }
 }
@@ -65,15 +65,15 @@
 }
 
 .promptUser {
-    color: #73ffb7;
+    color: #dad0ff;
 }
 
 .promptPath {
-    color: #ffe08a;
+    color: #7697df;
 }
 
 .promptCommand {
-    color: #c3a8ff;
+    color: #7cb3fb;
 }
 
 .directoryList {
@@ -156,9 +156,10 @@
     gap: 0.4rem;
     cursor: pointer;
     padding: 0.1rem 0;
+    color: #a99bff;
 
     &:hover {
-        color: #73ffb7;
+        color: #cbcaff;
     }
 }
 
@@ -171,7 +172,7 @@
 }
 
 .active {
-    color: #73ffb7;
+    color: #ededff;
     text-shadow: 0 0 8px rgba(115, 255, 183, 0.4);
 }
 
@@ -193,18 +194,24 @@
 }
 
 .commandButton {
-    border: 1px solid rgba(115, 255, 183, 0.6);
-    background: rgba(26, 55, 66, 0.6);
-    color: #73ffb7;
+    border: 1px solid rgba(238, 243, 255, 0.6);
+    background: rgba(26, 37, 66, 0.511);
+    color: #bdc2ff;
     padding: 0.3rem 0.75rem;
     border-radius: 0.35rem;
+    padding-top:0.5rem;
     font: inherit;
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 
     &:hover {
-        box-shadow: 0 0 1rem rgba(115, 255, 183, 0.35);
+        box-shadow: 0 0 0.5rem rgba(211, 210, 255, 0.35);
         transform: translateY(-1px);
+    }
+
+    span.commandButtonIcon {
+        display:inline-block;
+        transform:translateY(-1px);
     }
 }
 
@@ -212,9 +219,9 @@
     flex: 1;
     min-height: 20rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 0.85rem;
+    border-radius: 0.3rem;
     padding: 1rem;
-    background: rgba(6, 10, 22, 0.75);
+    background: rgba(0, 0, 0, 0.75);
     overflow-y: auto;
 }
 
@@ -251,10 +258,11 @@
     border-radius: 0.35rem;
     border: 1px solid transparent;
     transition: background 0.15s ease, border-color 0.15s ease;
+    padding-top:0.5rem;
 
     &:hover {
-        background: rgba(115, 255, 183, 0.08);
-        border-color: rgba(115, 255, 183, 0.3);
+        background: rgba(89, 91, 101, 0.08);
+        border-color: rgba(130, 152, 210, 0.3);
     }
 }
 
@@ -265,6 +273,7 @@
 .entryDate {
     color: #ffb476;
     font-size: 0.85rem;
+    transform:translateY(2px);
 }
 
 .entryTitle {
@@ -286,7 +295,7 @@
         margin: 0;
         font-family: var(--font-miracode), var(--font-pixel-mix), monospace;
         font-size: 0.7rem;
-        color: rgba(123, 255, 210, 0.6);
+        color: rgba(190, 205, 255, 0.6);
         line-height: 1.2;
         white-space: pre;
     }

@@ -30,6 +30,8 @@ import directory from "@/assets/images/homepage/directory.jpg";
 
 import miku from "@/assets/images/homepage/vaporwavemiku.jpg";
 
+import holyspirit from "@/assets/images/homepage/holyspirit.jpg";
+
 import { IProfilePanelProps } from "@/components/ProfilePanel/ProfilePanel";
 import { StatusPanel, IStatusPanelData } from "@/components/StatusPanel/StatusPanel";
 import { JournalPanel, IJournalPanelProps } from "@/components/JournalPanel/JournalPanel";
@@ -41,6 +43,7 @@ import { StatsPanel } from "@/components/StatsPanel/StatsPanel";
 import HeaderBox from "@/components/HeaderBox/HeaderBox";
 import { Footer } from "@/components/Footer/Footer";
 import { FavoritesPanel, IFavoritesPanelProps } from "@/components/FavoritesPanel/FavoritesPanel";
+import { StockTickerPanel } from "@/components/StockTickerPanel/StockTickerPanel";
 
 interface HomeState {
   profile: IProfilePanelProps;
@@ -182,13 +185,19 @@ export default function Home() {
               </Window>
             </div>
 
+            <div className={styles.span2}>
+              <div className={styles.panelImages}>
+                <Image src={holyspirit} alt="holyspirit" width={400} height={400} className={styles.paneImage} />
+              </div>
+            </div>
+
             <div className={styles.span4}>
               <Window header="favorites" showButtons={true}>
                 <FavoritesPanel favorites={homeData?.favorites?.favorites ?? []} />
               </Window>
             </div>
 
-            <div id="faq" className={styles.span8}>
+            <div id="faq" className={styles.span6}>
               <Window header="faq" showButtons={true}>
                 <FAQPanel faqs={homeData?.faq?.faqs ?? []} />
               </Window>
@@ -199,6 +208,12 @@ export default function Home() {
                 <div className={`windowContent`}>
                   <GalleryPreview images={homeData?.gallery?.images ?? []} />
                 </div>
+              </Window>
+            </div>
+
+            <div className={styles.spanFull}>
+              <Window header="stock ticker" showButtons={true}>
+                <StockTickerPanel />
               </Window>
             </div>
             
@@ -224,7 +239,7 @@ export default function Home() {
             </div>
 
             <div id="anilist" className={styles.spanFull}>
-              <Window header="watch list" showButtons={true}>
+              <Window header="anilist" showButtons={true}>
                 <div className={`windowContent`}>
                   <Anilist user="jamesac42" />
                 </div>

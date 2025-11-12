@@ -61,6 +61,7 @@
             .blogSection {
 
             padding:0.5rem 1rem;
+            overflow:hidden;
 
             .blogCategoryTitle {
                 margin-top:0.5rem;
@@ -84,16 +85,25 @@
 
                 &:hover {
                     cursor: var(--pointer-cursor-url), auto;
+                    @keyframes expand {
+                        0% {
+                            transform:translate(calc(-50% - 10px), -50%) scale(0);
+                        }
+                        100% {
+                            transform:translate(calc(-50% - 10px), -50%) scale(1);
+                        }
+                    }
                     &::before {
                         content:"";
                         position:absolute;
                         top:50%;
                         left:50%;
-                        transform:translate(-50%, -50%);
+                        transform:translate(calc(-50%), -50%);
                         width:calc(100% + 30px);
                         height:calc(100% + 12px);
-                        background:rgba(255, 255, 255, 0.591);
-                        z-index:-1;
+                        background:rgba(112, 104, 180, 0.135);
+                        z-index:1;
+                        animation: expand 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                     }
                 }
 
@@ -125,28 +135,29 @@
                         font-size:0.8rem;
                         display:block;
                         padding:0.25rem 0.5rem;
-                        background:linear-gradient(135deg, rgba(67, 112, 241, 0.85), rgba(63, 208, 255, 0.85));
-                        border-radius:0.5rem;
-                        color:var(--color-bg);
+                        background:linear-gradient(135deg, rgba(79, 67, 241, 0.85), rgba(63, 208, 255, 0.85));
+                        border-radius:0.2rem;
+                        color: white;
                         font-family: var(--font-miracode);
                         text-shadow:none;
                     }
                 }
 
                 .blogDate {
-                    font-size:0.8rem;
+                    font-size:0.7rem;
                     color:var(--color-text-muted);
                     font-family: var(--font-pixel-mix);
                     margin:0;
                     margin-left:0.5rem;
-                    transform:translateY(1px);
+                    transform:translateY(4px);
                 }
 
                 p {
                     margin:0;
                     margin-top:0.5rem;
+                    font-size:0.9rem;
                     color:var(--color-text-primary);
-                    font-family: var(--font-nunito);
+                    font-family: var(--font-miracode);
                 }
             }
 

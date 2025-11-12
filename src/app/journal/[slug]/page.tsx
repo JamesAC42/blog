@@ -11,6 +11,9 @@ import rehypeRaw from "rehype-raw";
 import markdownStyles from "@/styles/blogpostmarkdown.module.scss";
 import { StickerContainer } from "@/components/StickerContainer/StickerContainer";
 import Link from "next/link";
+import brain from "@/assets/images/brain.jpg";
+import Image from "next/image";
+import donttrust from "@/assets/images/donttrust.jpg";
 
 type DiaryEntry = {
   title: string;
@@ -41,13 +44,6 @@ export default function DiaryEntryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const asciiSidePanel = [
-    [
-      "      _",
-      "  ___| |___  _ __",
-      " / _ \\ / _ \\| '_ \\ ",
-      "|  __/| (_) | | | |",
-      " \\___| \\___/|_| |_|",
-    ].join("\n"),
     [
       " /\\_/\\",
       "( o.o )  feed the terminal cat",
@@ -94,19 +90,6 @@ export default function DiaryEntryPage() {
 
   const lineCount = entry?.content ? entry.content.split("\n").length : 12;
   const safeLineCount = Math.min(Math.max(lineCount, 12), 400);
-  const lineNumbers = Array.from({ length: safeLineCount }, (_, idx) => idx + 1);
-  const asciiColumn = [
-`  _   _                  _ 
- | \\ | | ___  _ __   ___| |
- |  \\| |/ _ \\| '_ \\ / _ \\ |
- | |\\  | (_) | | | |  __/ |
- |_| \\_|\\___/|_| |_|\\___|_|`,
-` __  __     _        _        
-|  \\/  |___| |_ __ _| |__ ___ 
-| |\\/| / -_)  _/ _\` | '_ (_-<
-|_|  |_\\___|\\__\\__,_|_.__/__/`,
-  ];
-
   return (
     <PageWrapper>
       <div className={styles.entryPage}>
@@ -127,11 +110,6 @@ export default function DiaryEntryPage() {
               <span>{entry ? formatDateTime(entry.publishedAt ?? entry.createdAt) : ""}</span>
             </div>
             <div className={styles.editorBody}>
-              <pre className={styles.lineNumbers}>
-                {lineNumbers.map((num) => (
-                  <span key={num}>{String(num).padStart(3, " ")} </span>
-                ))}
-              </pre>
               <div className={styles.bodyScroll}>
                 {loading && <p className={styles.editorState}>loading entry...</p>}
                 {!loading && error && <p className={styles.editorState}>{error}</p>}
@@ -148,13 +126,6 @@ export default function DiaryEntryPage() {
                     </div>
                   </div>
                 )}
-              </div>
-              <div className={styles.asciiColumn}>
-                {asciiColumn.map((art, idx) => (
-                  <pre key={idx} aria-hidden>
-                    {art}
-                  </pre>
-                ))}
               </div>
             </div>
             <div className={styles.modeLine}>
@@ -173,10 +144,10 @@ export default function DiaryEntryPage() {
               </div>
             </div>
             <div className={styles.sideRailCard}>
-              <div className={styles.sideRailHeader}>sticker matrix</div>
-              <div className={styles.stickerPad}>
-                <StickerContainer blogId={slug} />
-              </div>
+              <Image src={donttrust} height={300} width={400} alt="donttrust" />
+            </div>
+            <div className={styles.sideRailCard}>
+              <Image src={brain} height={1038} width={736} alt="brain" />
             </div>
           </aside>
         </div>

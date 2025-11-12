@@ -70,7 +70,7 @@ export const MediaPlayer = () => {
     return (
         <>
             <div className={styles.albumCover}>
-                <Image src={albumCover} alt="album cover" width={100} height={100} />
+                <Image src={albumCover} alt="album cover" width={400} height={395} />
             </div>
             <div className={styles.mediaPlayer}>
                 <audio ref={audioRef} src="/rainwithcapuccino.mp3" />

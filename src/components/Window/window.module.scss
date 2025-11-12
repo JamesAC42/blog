@@ -7,13 +7,14 @@
         padding:5px;
         background:linear-gradient(90deg, rgba(55, 92, 220, 0.95), rgba(125, 64, 255, 0.85)); 
         background:linear-gradient(90deg, rgba(127, 103, 231, 0.95), rgba(219, 215, 255, 0.82)); 
+        background:linear-gradient(90deg, rgba(99, 117, 255, 0.95), rgba(235, 235, 255, 0.82)); 
         border-bottom:1px solid rgba(8, 14, 42, 0.9);
         box-shadow:0 0 10px rgba(88, 135, 255, 0.35);
         box-shadow:0 0 10px 5px rgba(153, 146, 255, 0.719);
 
         font-family: var(--font-nunito);
         font-weight:400;
-        color:#e5eaff;
+        color:#f3f6ff;
         text-shadow:0 0 6px rgba(63, 208, 255, 0.45);
 
         .windowHeaderText {
