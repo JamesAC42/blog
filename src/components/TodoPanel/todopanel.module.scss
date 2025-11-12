@@ -8,12 +8,12 @@
         margin:1rem 0;
         li {
             font-family: var(--font-pixel-mix);
-            font-size:1rem;
+            font-size:0.9rem;
             color:var(--color-text-primary);
             padding:0.5rem 1rem;
 
             img {
-                transform:translateY(3px);
+                transform:translateY(4px);
             }
 
             &.completed {

@@ -66,6 +66,7 @@
                 margin-top:0.5rem;
                 h2 {
                     margin:0;
+                    margin-top:0.5rem;
                     padding:0;
                     color:var(--color-accent);
                     text-shadow:0 0 8px rgba(126, 92, 255, 0.45);
@@ -79,16 +80,8 @@
                 margin-bottom:1rem;
                 position:relative;
                 padding-bottom:0.5rem;
-                &::before {
-                    content:"";
-                    position:absolute;
-                    top:50%;
-                    left:-12px;
-                    width:0px;
-                    transform:translate(0, -50%);
-                    height:calc(100%);
-                    outline:1px dashed rgba(68, 132, 255, 0.3);
-                }
+                padding-top:0.2rem;
+
                 &:hover {
                     cursor: var(--pointer-cursor-url), auto;
                     &::before {
@@ -99,7 +92,8 @@
                         transform:translate(-50%, -50%);
                         width:calc(100% + 30px);
                         height:calc(100% + 12px);
-                        outline:1px dashed rgba(127, 90, 240, 0.35);
+                        background:rgba(255, 255, 255, 0.591);
+                        z-index:-1;
                     }
                 }
 
@@ -113,6 +107,7 @@
                     text-shadow:0 0 8px rgba(63, 208, 255, 0.4);
                     font-family: var(--font-pixel-mix);
                     margin-bottom:0.8rem;
+                    margin-top:0.5rem;
                     .blogTitle {
                         max-width:20rem;
                         white-space: nowrap;
@@ -133,7 +128,7 @@
                         background:linear-gradient(135deg, rgba(67, 112, 241, 0.85), rgba(63, 208, 255, 0.85));
                         border-radius:0.5rem;
                         color:var(--color-bg);
-                        font-family: var(--font-nunito);
+                        font-family: var(--font-miracode);
                         text-shadow:none;
                     }
                 }

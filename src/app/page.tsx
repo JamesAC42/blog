@@ -212,14 +212,6 @@ export default function Home() {
               <JournalPanel entries={homeData?.journal?.entries ?? []} />
             </div>
 
-            <div id="portfolio" className={styles.spanFull}>
-              <Window header="portfolio" showButtons={true}>
-                <div className={`windowContent`}>
-                  <PortfolioPanel intro={homeData?.portfolio?.intro} projects={homeData?.portfolio?.projects ?? []} />
-                </div>
-              </Window>
-            </div>
-
             <div className={styles.spanFull}>
                 <div className={styles.mikuImage}>
                   <Image

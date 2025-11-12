@@ -42,7 +42,8 @@
             padding:0.5rem 0.75rem;
             background:linear-gradient(135deg, rgba(17, 26, 74, 0.85), rgba(6, 10, 28, 0.85));
             border-radius:0.2rem;
-            box-shadow: 0 0 12px -1px rgba(74, 169, 255, 0.25);   
+            border: 1px solid #2d2f5e;
+            //box-shadow: 0 0 12px -1px rgba(74, 169, 255, 0.25);   
             background:
                 /* horizontal lines */
                 repeating-linear-gradient(
