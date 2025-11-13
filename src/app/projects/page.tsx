@@ -53,13 +53,6 @@ export default async function PortfolioPage() {
       <HeaderBox header="Projects" subtitle2="" showFlashy={false} />
       <br/>
       <div className={styles.portfolioPage}>
-        {intro ? (
-          <section className={styles.introSection}>
-            <div className={styles.introContent}>
-              <p>{intro}</p>
-            </div>
-          </section>
-        ) : null}
         <section className={styles.projectsSection}>
           {sortProjects(projects).map((project) => {
             const images = project.images ?? [];
