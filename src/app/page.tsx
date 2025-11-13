@@ -11,7 +11,6 @@ import Image from "next/image";
 import { Calendar } from "@/components/Calendar/Calendar";
 
 import Anilist from "@/components/Anilist/Anilist";
-import PortfolioPanel, { IPortfolioPanelProps } from "@/components/PortfolioPanel/PortfolioPanel";
 import lain from "@/assets/images/homepage/lain.jpg";
 
 import xlogo from "@/assets/images/social media/x.png";
@@ -31,6 +30,9 @@ import directory from "@/assets/images/homepage/directory.jpg";
 import miku from "@/assets/images/homepage/vaporwavemiku.jpg";
 
 import holyspirit from "@/assets/images/homepage/holyspirit.jpg";
+import azumangabeatles from "@/assets/images/harddaysnightazumanga.jpg";
+import clicktosave from "@/assets/images/clicktosave.jpg";
+import aerodynamicscow from "@/assets/images/cowaerodynamics.jpg";
 
 import { IProfilePanelProps } from "@/components/ProfilePanel/ProfilePanel";
 import { StatusPanel, IStatusPanelData } from "@/components/StatusPanel/StatusPanel";
@@ -54,7 +56,6 @@ interface HomeState {
   todo: ITodoPanelProps;
   favorites: IFavoritesPanelProps;
   blog: IBlogPanelProps;
-  portfolio: IPortfolioPanelProps | null;
   lastUpdated: string;
 }
 
@@ -178,7 +179,7 @@ export default function Home() {
             </div>
 
             <div id="music" className={styles.span4}>
-              <Window header="music playlist" showButtons={true}>
+              <Window header="now playing" showButtons={true}>
                 <div className={'windowContent'}>
                   <MediaPlayer />
                 </div>
@@ -187,7 +188,12 @@ export default function Home() {
 
             <div className={styles.span2}>
               <div className={styles.panelImages}>
-                <Image src={holyspirit} alt="holyspirit" width={400} height={400} className={styles.paneImage} />
+                <Window>
+                  <Image src={holyspirit} alt="holyspirit" width={400} height={400} className={styles.paneImage} />
+                </Window>
+                <Window>
+                  <Image src={azumangabeatles} alt="azumangabeatles" width={736} height={736} className={styles.paneImage} />
+                </Window>
               </div>
             </div>
 
@@ -223,8 +229,19 @@ export default function Home() {
               </Window>
             </div>
 
-            <div id="journal" className={styles.span8}>
+            <div id="journal" className={styles.span6}>
               <JournalPanel entries={homeData?.journal?.entries ?? []} />
+            </div>
+
+            <div className={styles.span2}>
+              <div className={styles.panelImages}>
+                <Window>
+                  <Image src={clicktosave} alt="clicktosave" width={736} height={414} className={styles.paneImage} />
+                </Window>
+                <Window>
+                  <Image src={aerodynamicscow} alt="aerodynamicscow" width={452} height={330} className={styles.paneImage} />
+                </Window>
+              </div>
             </div>
 
             <div className={styles.spanFull}>
@@ -254,8 +271,12 @@ export default function Home() {
                         
             <div className={styles.span2}>
               <div className={styles.panelImages}>
-                <Image src={mikudisc} alt="kissu" height={736} width={736} className={styles.paneImage} />
-                <Image src={directory} alt="directory" height={909} width={475} className={styles.paneImage} />
+                <Window>
+                  <Image src={mikudisc} alt="kissu" height={736} width={736} className={styles.paneImage} />
+                </Window>
+                <Window>
+                  <Image src={directory} alt="directory" height={909} width={475} className={styles.paneImage} />
+                </Window>
               </div>
             </div>
 

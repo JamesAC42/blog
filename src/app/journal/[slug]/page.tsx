@@ -46,8 +46,8 @@ export default function DiaryEntryPage() {
   const asciiSidePanel = [
     [
       " /\\_/\\",
-      "( o.o )  feed the terminal cat",
-      " > ^ <   with new logs",
+      "( o.o )  nothing to report",
+      " > ^ <   have a nice day",
     ].join("\n"),
   ];
 
@@ -134,7 +134,7 @@ export default function DiaryEntryPage() {
           </section>
           <aside className={styles.sideRail}>
             <div className={styles.sideRailCard}>
-              <div className={styles.sideRailHeader}>ascii signals</div>
+              <div className={styles.sideRailHeader}>logs</div>
               <div className={styles.asciiStack}>
                 {asciiSidePanel.map((art, idx) => (
                   <pre key={idx} aria-hidden>
