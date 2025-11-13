@@ -305,7 +305,7 @@ export async function GET(request: Request) {
 
   for (const symbol of symbols) {
     try {
-      const quote = await fetchQuote(symbol, apiKey);
+      const quote = await fetchQuote(symbol, apiKey ?? "");
       if (quote) {
         quotes.push(quote);
       } else {
