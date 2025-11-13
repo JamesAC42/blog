@@ -1,3 +1,5 @@
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { NextResponse } from "next/server";
 
 type StockQuote = {
@@ -26,8 +28,18 @@ type StocksPayload = {
   lastUpdated: string;
 };
 
+type CacheEntry = {
+  key: string;
+  timestamp: number;
+  dateKey: string;
+  payload: StocksPayload;
+};
+
+type CacheStore = Record<string, CacheEntry>;
+
 const DEFAULT_SYMBOLS = ["GOOG", "TSLA", "PLTR", "NVDA", "AAPL", "MSFT", "AMZN", "META", "NFLX", "AMD", "AVGO", "SMCI"];
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
+const CACHE_FILE_PATH = path.join(process.cwd(), ".cache", "stocks-cache.json");
 const MARKET_CAP_OVERRIDES: Record<string, number> = {
   GOOG: 1_800_000_000_000,
   GOOGL: 1_800_000_000_000,
@@ -204,16 +216,59 @@ const PLACEHOLDER_QUOTES: StockQuote[] = [
 ];
 
 
-let cache:
-  | {
-      key: string;
-      timestamp: number;
-      dateKey: string;
-      payload: StocksPayload;
-    }
-  | null = null;
+let cache: CacheStore | null = null;
 
 const getDateKey = () => new Date().toISOString().slice(0, 10);
+
+const getCacheStore = async (): Promise<CacheStore> => {
+  if (cache) {
+    return cache;
+  }
+
+  try {
+    const raw = await readFile(CACHE_FILE_PATH, "utf-8");
+    cache = (JSON.parse(raw) as CacheStore) ?? {};
+  } catch (error) {
+    const isMissingFile = (error as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
+    if (!isMissingFile) {
+      console.error("Failed to read stock cache from disk", error);
+    }
+    cache = {};
+  }
+
+  return cache;
+};
+
+const persistCacheStore = async (store: CacheStore) => {
+  try {
+    await mkdir(path.dirname(CACHE_FILE_PATH), { recursive: true });
+    await writeFile(CACHE_FILE_PATH, JSON.stringify(store), "utf-8");
+  } catch (error) {
+    console.error("Failed to persist stock cache to disk", error);
+  }
+};
+
+const upsertCacheEntry = async (entry: CacheEntry, persist = true) => {
+  const store = await getCacheStore();
+  store[entry.key] = entry;
+  cache = store;
+
+  if (persist) {
+    await persistCacheStore(store);
+  }
+};
+
+const isCacheEntryValid = (entry: CacheEntry | undefined, todayKey: string) => {
+  if (!entry) {
+    return false;
+  }
+
+  if (entry.dateKey !== todayKey) {
+    return false;
+  }
+
+  return Date.now() - entry.timestamp < CACHE_DURATION_MS;
+};
 
 const toNumber = (value: string | undefined): number | null => {
   if (!value) return null;
@@ -279,8 +334,12 @@ export async function GET(request: Request) {
 
   const cacheKey = symbols.join(",");
   const todayKey = getDateKey();
-  if (!usePlaceholder && cache && cache.key === cacheKey && cache.dateKey === todayKey && Date.now() - cache.timestamp < CACHE_DURATION_MS) {
-    return NextResponse.json(cache.payload);
+  if (!usePlaceholder) {
+    const store = await getCacheStore();
+    const entry = store[cacheKey];
+    if (isCacheEntryValid(entry, todayKey)) {
+      return NextResponse.json(entry.payload);
+    }
   }
 
   if (usePlaceholder) {
@@ -291,12 +350,15 @@ export async function GET(request: Request) {
       errors: [],
       lastUpdated: new Date().toISOString(),
     };
-    cache = {
-      key: cacheKey,
-      timestamp: Date.now(),
-      dateKey: todayKey,
-      payload,
-    };
+    await upsertCacheEntry(
+      {
+        key: cacheKey,
+        timestamp: Date.now(),
+        dateKey: todayKey,
+        payload,
+      },
+      false,
+    );
     return NextResponse.json(payload);
   }
 
@@ -326,12 +388,12 @@ export async function GET(request: Request) {
     lastUpdated: new Date().toISOString(),
   };
 
-  cache = {
+  await upsertCacheEntry({
     key: cacheKey,
     timestamp: Date.now(),
     dateKey: todayKey,
     payload,
-  };
+  });
 
   return NextResponse.json(payload);
 }

@@ -10,6 +10,7 @@ import type { PortfolioProject, PortfolioSettings } from "@/types/portfolio";
 import { formatProjectDate, sortProjects } from "@/utilities/portfolio";
 import { getLinkDisplayLabel, getPresetForType } from "@/components/PortfolioLink/PortfolioLinkIcons";
 import { ProjectGallery } from "@/components/PortfolioProject/ProjectGallery";
+import { Footer } from "@/components/Footer/Footer";
 
 export const revalidate = 0;
 
@@ -111,6 +112,8 @@ export default async function PortfolioPage() {
           })}
         </section>
       </div>
+      <br />
+      <Footer />
     </PageWrapper>
   );
 }
