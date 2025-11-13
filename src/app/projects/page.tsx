@@ -6,10 +6,10 @@ import HeaderBox from "@/components/HeaderBox/HeaderBox";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import Image from "next/image";
 import type { PortfolioProject, PortfolioSettings } from "@/types/portfolio";
 import { formatProjectDate, sortProjects } from "@/utilities/portfolio";
 import { getLinkDisplayLabel, getPresetForType } from "@/components/PortfolioLink/PortfolioLinkIcons";
+import { ProjectGallery } from "@/components/PortfolioProject/ProjectGallery";
 
 export const revalidate = 0;
 
@@ -61,62 +61,61 @@ export default async function PortfolioPage() {
           </section>
         ) : null}
         <section className={styles.projectsSection}>
-          {sortProjects(projects).map((project) => (
-            <Window key={project.id} header={project.title} showButtons={true}>
-              <div className={`windowContent ${styles.projectContent}`}>
-                <div className={styles.projectMeta}>
-                  <span>{formatProjectDate(project)}</span>
-                  <span>{project.role ?? ""}</span>
+          {sortProjects(projects).map((project) => {
+            const images = project.images ?? [];
+            const [heroImage, ...galleryImages] = images;
+            return (
+              <Window key={project.id}>
+                <div className={`windowContent ${styles.projectContent}`}>
+                  <div className={styles.projectHeader}>
+                    <p className={styles.projectMeta}>
+                      <span>{formatProjectDate(project)}</span>
+                      {project.role ? <span>• {project.role}</span> : null}
+                    </p>
+                    <h3>{project.title}</h3>
+                    {project.links?.length ? (
+                      <div className={styles.projectLinks}>
+                        {project.links.map((link) => {
+                          const preset = getPresetForType(link.type);
+                          const Icon = preset?.Icon;
+                          const label = getLinkDisplayLabel(link);
+                          return (
+                            <a
+                              key={link.id ?? link.url}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={label}
+                              title={label}
+                            >
+                              {Icon ? <Icon size={20} aria-hidden className={styles.linkIcon} /> : <span className={styles.linkFallback}>↗</span>}
+                              <span className={styles.srOnly}>{label}</span>
+                            </a>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                    <p className={styles.projectSummary}>{project.summary}</p>
+                  </div>
+                  {project.body ? (
+                    <div className={styles.projectBody}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                        {project.body}
+                      </ReactMarkdown>
+                    </div>
+                  ) : null}
+                  <ProjectGallery heroImage={heroImage} galleryImages={galleryImages} projectTitle={project.title} />
+                  {project.tags?.length ? (
+                    <ul className={styles.tagList}>
+                      {project.tags.map((tag) => (
+                        <li key={`${project.id}-${tag}`}>{tag}</li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </div>
-                <p className={styles.projectSummary}>{project.summary}</p>
-                {project.body ? (
-                  <div className={styles.projectBody}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                      {project.body}
-                    </ReactMarkdown>
-                  </div>
-                ) : null}
-                {project.images?.length ? (
-                  <div className={styles.projectGallery}>
-                    {project.images.map((image, idx) => (
-                      <figure key={`${project.id}-${image.id ?? idx}`}>
-                        <Image
-                          src={image.url}
-                          alt={image.caption ?? project.title}
-                          width={1200}
-                          height={800}
-                          sizes="(min-width: 1024px) 600px, 100vw"
-                        />
-                        {image.caption ? <figcaption>{image.caption}</figcaption> : null}
-                      </figure>
-                    ))}
-                  </div>
-                ) : null}
-                {project.tags?.length ? (
-                  <ul className={styles.tagList}>
-                    {project.tags.map((tag) => (
-                      <li key={`${project.id}-${tag}`}>{tag}</li>
-                    ))}
-                  </ul>
-                ) : null}
-                {project.links?.length ? (
-                  <div className={styles.linkRow}>
-                    {project.links.map((link) => {
-                      const preset = getPresetForType(link.type);
-                      const Icon = preset?.Icon;
-                      const label = getLinkDisplayLabel(link);
-                      return (
-                        <a key={link.id ?? link.url} href={link.url} target="_blank" rel="noopener noreferrer">
-                          {Icon ? <Icon size={16} className={styles.linkIcon} aria-hidden /> : null}
-                          <span>{label}</span>
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </div>
-            </Window>
-          ))}
+              </Window>
+            );
+          })}
         </section>
       </div>
     </PageWrapper>
