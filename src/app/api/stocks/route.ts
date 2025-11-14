@@ -322,23 +322,26 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const requestedSymbols = searchParams.get("symbols");
-  const symbols = requestedSymbols
+  const parsedSymbols = requestedSymbols
     ? requestedSymbols
         .split(",")
         .map((s) => s.trim().toUpperCase())
         .filter(Boolean)
     : DEFAULT_SYMBOLS;
+
+  const symbols = Array.from(new Set(parsedSymbols));
   if (symbols.length === 0) {
     return NextResponse.json({ error: "No symbols provided" }, { status: 400 });
   }
 
-  const cacheKey = symbols.join(",");
+  const cacheKey = [...symbols].sort().join(",");
   const todayKey = getDateKey();
+  let existingEntry: CacheEntry | undefined;
   if (!usePlaceholder) {
     const store = await getCacheStore();
-    const entry = store[cacheKey];
-    if (isCacheEntryValid(entry, todayKey)) {
-      return NextResponse.json(entry.payload);
+    existingEntry = store[cacheKey];
+    if (isCacheEntryValid(existingEntry, todayKey)) {
+      return NextResponse.json(existingEntry.payload);
     }
   }
 
@@ -387,6 +390,18 @@ export async function GET(request: Request) {
     errors,
     lastUpdated: new Date().toISOString(),
   };
+
+  if (quotes.length === 0) {
+    if (existingEntry) {
+      return NextResponse.json(existingEntry.payload, {
+        headers: {
+          "x-stock-cache-status": "stale",
+        },
+      });
+    }
+
+    return NextResponse.json(payload, { status: 503 });
+  }
 
   await upsertCacheEntry({
     key: cacheKey,
