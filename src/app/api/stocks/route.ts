@@ -257,10 +257,10 @@ const persistCacheStore = async (store: CacheStore) => {
 
 const upsertMultipleSymbolCache = async (quotes: StockQuote[]) => {
   if (quotes.length === 0) return;
-  
+
   const store = await getCacheStore();
   const now = Date.now();
-  
+
   for (const quote of quotes) {
     store.symbols[quote.symbol] = {
       symbol: quote.symbol,
@@ -268,7 +268,7 @@ const upsertMultipleSymbolCache = async (quotes: StockQuote[]) => {
       quote,
     };
   }
-  
+
   cacheStore = store;
   await persistCacheStore(store);
 };
@@ -276,16 +276,77 @@ const upsertMultipleSymbolCache = async (quotes: StockQuote[]) => {
 const getCachedQuote = async (symbol: string): Promise<{ quote: StockQuote; isStale: boolean } | null> => {
   const store = await getCacheStore();
   const entry = store.symbols[symbol];
-  
+
   if (!entry) return null;
-  
+
   const age = Date.now() - entry.timestamp;
   if (age > CACHE_MAX_AGE_MS) return null;
-  
+
   return {
     quote: entry.quote,
     isStale: age > CACHE_STALE_AGE_MS,
   };
+};
+
+const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+type YahooCrumbCache = {
+  crumb: string;
+  cookies: string;
+  timestamp: number;
+};
+
+let yahooCrumbCache: YahooCrumbCache | null = null;
+const CRUMB_TTL_MS = 60 * 60 * 1000;
+
+const getYahooCrumbAndCookies = async (forceRefresh = false): Promise<{ crumb: string; cookies: string } | null> => {
+  if (!forceRefresh && yahooCrumbCache && Date.now() - yahooCrumbCache.timestamp < CRUMB_TTL_MS) {
+    return { crumb: yahooCrumbCache.crumb, cookies: yahooCrumbCache.cookies };
+  }
+
+  try {
+    const initResponse = await fetch("https://fc.yahoo.com/", {
+      cache: "no-store",
+      headers: { "User-Agent": USER_AGENT },
+      redirect: "manual",
+    });
+
+    const setCookieHeaders = initResponse.headers.getSetCookie?.() ?? [];
+    if (setCookieHeaders.length === 0) {
+      console.error("Yahoo auth: no cookies received from fc.yahoo.com");
+      return null;
+    }
+
+    const cookies = setCookieHeaders
+      .map((c) => c.split(";")[0])
+      .filter(Boolean)
+      .join("; ");
+
+    const crumbResponse = await fetch("https://query2.finance.yahoo.com/v1/test/getcrumb", {
+      cache: "no-store",
+      headers: {
+        "User-Agent": USER_AGENT,
+        Cookie: cookies,
+      },
+    });
+
+    if (!crumbResponse.ok) {
+      console.error(`Yahoo auth: crumb request failed with ${crumbResponse.status}`);
+      return null;
+    }
+
+    const crumb = await crumbResponse.text();
+    if (!crumb || crumb.length === 0) {
+      console.error("Yahoo auth: empty crumb received");
+      return null;
+    }
+
+    yahooCrumbCache = { crumb, cookies, timestamp: Date.now() };
+    return { crumb, cookies };
+  } catch (error) {
+    console.error("Yahoo auth: failed to obtain crumb/cookies", error);
+    return null;
+  }
 };
 
 type YahooQuoteResult = {
@@ -308,45 +369,53 @@ type YahooQuoteResponse = {
   };
 };
 
-const fetchYahooQuotes = async (symbols: string[]): Promise<{ quotes: StockQuote[]; errors: StockError[] }> => {
+const fetchYahooQuotesWithCrumb = async (
+  symbols: string[],
+  crumb: string,
+  cookies: string
+): Promise<{ quotes: StockQuote[]; errors: StockError[]; unauthorized: boolean }> => {
   const quotes: StockQuote[] = [];
   const errors: StockError[] = [];
-  
+
   try {
     const symbolList = symbols.join(",");
-    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolList)}`;
-    
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolList)}&crumb=${encodeURIComponent(crumb)}`;
+
     const response = await fetch(url, {
       cache: "no-store",
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "User-Agent": USER_AGENT,
+        Cookie: cookies,
       },
     });
-    
+
+    if (response.status === 401 || response.status === 403) {
+      return { quotes: [], errors: [], unauthorized: true };
+    }
+
     if (!response.ok) {
       throw new Error(`Yahoo Finance responded with ${response.status}`);
     }
-    
+
     const data: YahooQuoteResponse = await response.json();
-    
+
     if (!data?.quoteResponse?.result) {
       throw new Error("Invalid response structure from Yahoo Finance");
     }
-    
+
     const results = data.quoteResponse.result;
     const symbolsReceived = new Set(results.map((r) => r.symbol));
-    
+
     for (const result of results) {
       if (result.regularMarketPrice === undefined) {
         errors.push({ symbol: result.symbol, message: "No price data available" });
         continue;
       }
-      
+
       const changePercent = result.regularMarketChangePercent;
-      const changePercentStr = changePercent !== undefined 
-        ? `${changePercent >= 0 ? "+" : ""}${changePercent.toFixed(2)}%`
-        : null;
-      
+      const changePercentStr =
+        changePercent !== undefined ? `${changePercent >= 0 ? "+" : ""}${changePercent.toFixed(2)}%` : null;
+
       quotes.push({
         symbol: result.symbol,
         price: result.regularMarketPrice ?? null,
@@ -361,7 +430,7 @@ const fetchYahooQuotes = async (symbols: string[]): Promise<{ quotes: StockQuote
         marketCap: result.marketCap ?? MARKET_CAP_OVERRIDES[result.symbol] ?? null,
       });
     }
-    
+
     for (const symbol of symbols) {
       if (!symbolsReceived.has(symbol)) {
         errors.push({ symbol, message: "Symbol not found" });
@@ -373,7 +442,127 @@ const fetchYahooQuotes = async (symbols: string[]): Promise<{ quotes: StockQuote
       errors.push({ symbol, message });
     }
   }
-  
+
+  return { quotes, errors, unauthorized: false };
+};
+
+const fetchYahooQuotes = async (symbols: string[]): Promise<{ quotes: StockQuote[]; errors: StockError[] }> => {
+  const auth = await getYahooCrumbAndCookies();
+  if (!auth) {
+    return {
+      quotes: [],
+      errors: symbols.map((symbol) => ({ symbol, message: "Failed to authenticate with Yahoo Finance" })),
+    };
+  }
+
+  let result = await fetchYahooQuotesWithCrumb(symbols, auth.crumb, auth.cookies);
+
+  if (result.unauthorized) {
+    const freshAuth = await getYahooCrumbAndCookies(true);
+    if (!freshAuth) {
+      return {
+        quotes: [],
+        errors: symbols.map((symbol) => ({ symbol, message: "Failed to re-authenticate with Yahoo Finance" })),
+      };
+    }
+    result = await fetchYahooQuotesWithCrumb(symbols, freshAuth.crumb, freshAuth.cookies);
+    if (result.unauthorized) {
+      return {
+        quotes: [],
+        errors: symbols.map((symbol) => ({ symbol, message: "Yahoo Finance authentication failed" })),
+      };
+    }
+  }
+
+  return { quotes: result.quotes, errors: result.errors };
+};
+
+type YahooChartMeta = {
+  symbol?: string;
+  regularMarketPrice?: number;
+  previousClose?: number;
+  chartPreviousClose?: number;
+  regularMarketVolume?: number;
+  regularMarketDayHigh?: number;
+  regularMarketDayLow?: number;
+  regularMarketOpen?: number;
+};
+
+type YahooChartResponse = {
+  chart?: {
+    result?: Array<{
+      meta?: YahooChartMeta;
+    }>;
+    error?: { code?: string; description?: string };
+  };
+};
+
+const fetchYahooChartQuote = async (symbol: string): Promise<StockQuote | null> => {
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
+
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: { "User-Agent": USER_AGENT },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data: YahooChartResponse = await response.json();
+    const meta = data?.chart?.result?.[0]?.meta;
+
+    if (!meta || meta.regularMarketPrice === undefined) {
+      return null;
+    }
+
+    const previousClose = meta.previousClose ?? meta.chartPreviousClose ?? null;
+    const price = meta.regularMarketPrice;
+    const change = previousClose !== null ? price - previousClose : null;
+    const changePercent =
+      change !== null && previousClose !== null && previousClose !== 0
+        ? `${change >= 0 ? "+" : ""}${((change / previousClose) * 100).toFixed(2)}%`
+        : null;
+
+    return {
+      symbol: meta.symbol ?? symbol,
+      price,
+      open: meta.regularMarketDayLow !== undefined ? meta.regularMarketOpen ?? null : null,
+      high: meta.regularMarketDayHigh ?? null,
+      low: meta.regularMarketDayLow ?? null,
+      previousClose,
+      change,
+      changePercent,
+      latestTradingDay: new Date().toISOString().slice(0, 10),
+      volume: meta.regularMarketVolume ?? null,
+      marketCap: MARKET_CAP_OVERRIDES[symbol] ?? null,
+    };
+  } catch {
+    return null;
+  }
+};
+
+const CHART_CONCURRENCY = 4;
+
+const fetchYahooChartQuotes = async (symbols: string[]): Promise<{ quotes: StockQuote[]; errors: StockError[] }> => {
+  const quotes: StockQuote[] = [];
+  const errors: StockError[] = [];
+
+  for (let i = 0; i < symbols.length; i += CHART_CONCURRENCY) {
+    const batch = symbols.slice(i, i + CHART_CONCURRENCY);
+    const results = await Promise.all(batch.map((s) => fetchYahooChartQuote(s)));
+
+    for (let j = 0; j < batch.length; j++) {
+      const quote = results[j];
+      if (quote) {
+        quotes.push(quote);
+      } else {
+        errors.push({ symbol: batch[j], message: "Chart data unavailable" });
+      }
+    }
+  }
+
   return { quotes, errors };
 };
 
@@ -389,22 +578,22 @@ const fetchAlphaVantageQuote = async (symbol: string, apiKey: string): Promise<S
     symbol,
     apikey: apiKey,
   });
-  
+
   const response = await fetch(`https://www.alphavantage.co/query?${params.toString()}`, { cache: "no-store" });
-  
+
   if (!response.ok) {
     throw new Error(`Alpha Vantage responded with ${response.status}`);
   }
-  
+
   const payload = await response.json();
-  
+
   if (payload?.Note) {
     throw new Error(payload.Note);
   }
   if (payload?.["Error Message"]) {
     throw new Error(payload["Error Message"]);
   }
-  
+
   const quote = payload?.["Global Quote"];
   if (!quote || Object.keys(quote).length === 0) {
     return null;
@@ -434,14 +623,14 @@ const fetchAlphaVantageWithRateLimit = async (
   const quotes: StockQuote[] = [];
   const errors: StockError[] = [];
   const RATE_LIMIT_DELAY_MS = 12500;
-  
+
   for (let i = 0; i < symbols.length; i++) {
     const symbol = symbols[i];
-    
+
     if (i > 0) {
       await delay(RATE_LIMIT_DELAY_MS);
     }
-    
+
     try {
       const quote = await fetchAlphaVantageQuote(symbol, apiKey);
       if (quote) {
@@ -456,7 +645,7 @@ const fetchAlphaVantageWithRateLimit = async (
       });
     }
   }
-  
+
   return { quotes, errors };
 };
 
@@ -527,17 +716,37 @@ export async function GET(request: Request) {
   fetchErrors = yahooResult.errors;
 
   const yahooSuccessSymbols = new Set(fetchedQuotes.map((q) => q.symbol));
-  const yahooFailedSymbols = symbolsToFetch.filter((s) => !yahooSuccessSymbols.has(s));
+  let remainingSymbols = symbolsToFetch.filter((s) => !yahooSuccessSymbols.has(s));
 
-  if (yahooFailedSymbols.length > 0) {
+  if (remainingSymbols.length > 0) {
+    const chartResult = await fetchYahooChartQuotes(remainingSymbols);
+    fetchedQuotes = [...fetchedQuotes, ...chartResult.quotes];
+
+    const chartSuccessSymbols = new Set(chartResult.quotes.map((q) => q.symbol));
+    fetchErrors = fetchErrors.filter((e) => !chartSuccessSymbols.has(e.symbol));
+    remainingSymbols = remainingSymbols.filter((s) => !chartSuccessSymbols.has(s));
+
+    for (const chartError of chartResult.errors) {
+      if (!chartSuccessSymbols.has(chartError.symbol)) {
+        const existingIdx = fetchErrors.findIndex((e) => e.symbol === chartError.symbol);
+        if (existingIdx >= 0) {
+          fetchErrors[existingIdx] = chartError;
+        } else {
+          fetchErrors.push(chartError);
+        }
+      }
+    }
+  }
+
+  if (remainingSymbols.length > 0) {
     const apiKey = process.env.ALPHAVANTAGE_API_KEY;
     if (apiKey) {
-      const avResult = await fetchAlphaVantageWithRateLimit(yahooFailedSymbols, apiKey);
+      const avResult = await fetchAlphaVantageWithRateLimit(remainingSymbols, apiKey);
       fetchedQuotes = [...fetchedQuotes, ...avResult.quotes];
-      
+
       const avSuccessSymbols = new Set(avResult.quotes.map((q) => q.symbol));
       fetchErrors = fetchErrors.filter((e) => !avSuccessSymbols.has(e.symbol));
-      
+
       for (const avError of avResult.errors) {
         if (!avSuccessSymbols.has(avError.symbol)) {
           const existingIdx = fetchErrors.findIndex((e) => e.symbol === avError.symbol);
@@ -557,7 +766,7 @@ export async function GET(request: Request) {
 
   const freshSymbolsSet = new Set(fetchedQuotes.map((q) => q.symbol));
   const finalQuotes: StockQuote[] = [...fetchedQuotes];
-  
+
   for (const cached of cachedQuotes) {
     if (!freshSymbolsSet.has(cached.symbol)) {
       finalQuotes.push(cached);
@@ -569,10 +778,12 @@ export async function GET(request: Request) {
     return !hasFreshQuote;
   });
 
-  const cacheStatus: StocksPayload["cacheStatus"] = 
-    finalErrors.length > 0 ? "partial" : 
-    staleSymbols.length > 0 && fetchedQuotes.length === symbolsToFetch.length ? "fresh" : 
-    "fresh";
+  const cacheStatus: StocksPayload["cacheStatus"] =
+    finalErrors.length > 0
+      ? "partial"
+      : staleSymbols.length > 0 && fetchedQuotes.length === symbolsToFetch.length
+        ? "fresh"
+        : "fresh";
 
   const payload: StocksPayload = {
     symbols,

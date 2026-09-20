@@ -16,7 +16,10 @@ NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key
 TURNSTILE_SECRET_KEY=your-secret-key
 
 # Stock Ticker (optional)
-ALPHAVANTAGE_API_KEY=your-alpha-vantage-key  # Optional fallback; primary uses Yahoo Finance
+# Primary: Yahoo Finance (uses crumb+cookie auth for batch v7 quote API)
+# Fallback 1: Yahoo v8 chart API (no auth needed, parallel fetches)
+# Fallback 2: Alpha Vantage (rate-limited, requires API key)
+ALPHAVANTAGE_API_KEY=your-alpha-vantage-key  # Optional last-resort fallback
 USE_PLACEHOLDER_STOCKS=true                   # Set to "true" to use hardcoded placeholder data
 ```
 
