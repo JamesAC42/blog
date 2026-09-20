@@ -21,6 +21,7 @@ type StocksResponse = {
   quotes: StockQuote[];
   errors?: { symbol: string; message: string }[];
   lastUpdated?: string;
+  cacheStatus?: "fresh" | "stale" | "partial";
 };
 
 export const StockTickerPanel = () => {
@@ -28,6 +29,7 @@ export const StockTickerPanel = () => {
   const [panelError, setPanelError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<StocksResponse["errors"]>([]);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [cacheStatus, setCacheStatus] = useState<StocksResponse["cacheStatus"]>("fresh");
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchQuotes = useCallback(
@@ -43,6 +45,7 @@ export const StockTickerPanel = () => {
         setQuotes(data.quotes ?? []);
         setWarnings(data.errors ?? []);
         setLastUpdated(data.lastUpdated ?? null);
+        setCacheStatus(data.cacheStatus ?? "fresh");
       } catch (error) {
         setPanelError(error instanceof Error ? error.message : "Failed to load quotes");
       } finally {
@@ -131,7 +134,12 @@ export const StockTickerPanel = () => {
     <div className={`windowContent`}>
       <div className={styles.header}>
         <div>
-          {lastUpdatedLabel && <p className={styles.subtitle}>Updated {lastUpdatedLabel} • Alpha Vantage</p>}
+          {lastUpdatedLabel && (
+            <p className={styles.subtitle}>
+              Updated {lastUpdatedLabel}
+              {cacheStatus === "partial" && " • Some data unavailable"}
+            </p>
+          )}
         </div>
       </div>
 
@@ -173,13 +181,18 @@ export const StockTickerPanel = () => {
               );
             })}
           </div>
-          {warnings && warnings.length > 0 && (
+          {warnings && warnings.length > 0 && warnings.length <= 3 && (
             <div className={styles.warning}>
               {warnings.map((warning) => (
                 <p key={warning.symbol}>
                   {warning.symbol}: {warning.message}
                 </p>
               ))}
+            </div>
+          )}
+          {warnings && warnings.length > 3 && (
+            <div className={styles.warning}>
+              <p>Unable to load {warnings.length} symbols: {warnings.map((w) => w.symbol).join(", ")}</p>
             </div>
           )}
           {marketCapStats.list.length > 0 && (

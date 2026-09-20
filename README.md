@@ -14,6 +14,10 @@ ADMIN_PASSWORD_HASH=<bcrypt-hash>
 JWT_SECRET=replace-with-a-long-random-string
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key
 TURNSTILE_SECRET_KEY=your-secret-key
+
+# Stock Ticker (optional)
+ALPHAVANTAGE_API_KEY=your-alpha-vantage-key  # Optional fallback; primary uses Yahoo Finance
+USE_PLACEHOLDER_STOCKS=true                   # Set to "true" to use hardcoded placeholder data
 ```
 
 3. Prisma setup:

@@ -26,20 +26,25 @@ type StocksPayload = {
   quotes: StockQuote[];
   errors: StockError[];
   lastUpdated: string;
+  cacheStatus?: "fresh" | "stale" | "partial";
 };
 
-type CacheEntry = {
-  key: string;
+type PerSymbolCacheEntry = {
+  symbol: string;
   timestamp: number;
-  dateKey: string;
-  payload: StocksPayload;
+  quote: StockQuote;
 };
 
-type CacheStore = Record<string, CacheEntry>;
+type CacheStore = {
+  version: 2;
+  symbols: Record<string, PerSymbolCacheEntry>;
+};
 
 const DEFAULT_SYMBOLS = ["GOOG", "TSLA", "PLTR", "NVDA", "AAPL", "MSFT", "AMZN", "META", "NFLX", "AMD", "AVGO", "SMCI"];
-const CACHE_DURATION_MS = 24 * 60 * 60 * 1000;
+const CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const CACHE_STALE_AGE_MS = 6 * 60 * 60 * 1000;
 const CACHE_FILE_PATH = path.join(process.cwd(), ".cache", "stocks-cache.json");
+
 const MARKET_CAP_OVERRIDES: Record<string, number> = {
   GOOG: 1_800_000_000_000,
   GOOGL: 1_800_000_000_000,
@@ -215,59 +220,161 @@ const PLACEHOLDER_QUOTES: StockQuote[] = [
   },
 ];
 
-
-let cache: CacheStore | null = null;
-
-const getDateKey = () => new Date().toISOString().slice(0, 10);
+let cacheStore: CacheStore | null = null;
 
 const getCacheStore = async (): Promise<CacheStore> => {
-  if (cache) {
-    return cache;
+  if (cacheStore) {
+    return cacheStore;
   }
 
   try {
     const raw = await readFile(CACHE_FILE_PATH, "utf-8");
-    cache = (JSON.parse(raw) as CacheStore) ?? {};
+    const parsed = JSON.parse(raw);
+    if (parsed?.version === 2 && parsed?.symbols) {
+      cacheStore = parsed as CacheStore;
+    } else {
+      cacheStore = { version: 2, symbols: {} };
+    }
   } catch (error) {
     const isMissingFile = (error as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
     if (!isMissingFile) {
       console.error("Failed to read stock cache from disk", error);
     }
-    cache = {};
+    cacheStore = { version: 2, symbols: {} };
   }
 
-  return cache;
+  return cacheStore;
 };
 
 const persistCacheStore = async (store: CacheStore) => {
   try {
     await mkdir(path.dirname(CACHE_FILE_PATH), { recursive: true });
-    await writeFile(CACHE_FILE_PATH, JSON.stringify(store), "utf-8");
+    await writeFile(CACHE_FILE_PATH, JSON.stringify(store, null, 2), "utf-8");
   } catch (error) {
     console.error("Failed to persist stock cache to disk", error);
   }
 };
 
-const upsertCacheEntry = async (entry: CacheEntry, persist = true) => {
+const upsertMultipleSymbolCache = async (quotes: StockQuote[]) => {
+  if (quotes.length === 0) return;
+  
   const store = await getCacheStore();
-  store[entry.key] = entry;
-  cache = store;
-
-  if (persist) {
-    await persistCacheStore(store);
+  const now = Date.now();
+  
+  for (const quote of quotes) {
+    store.symbols[quote.symbol] = {
+      symbol: quote.symbol,
+      timestamp: now,
+      quote,
+    };
   }
+  
+  cacheStore = store;
+  await persistCacheStore(store);
 };
 
-const isCacheEntryValid = (entry: CacheEntry | undefined, todayKey: string) => {
-  if (!entry) {
-    return false;
-  }
+const getCachedQuote = async (symbol: string): Promise<{ quote: StockQuote; isStale: boolean } | null> => {
+  const store = await getCacheStore();
+  const entry = store.symbols[symbol];
+  
+  if (!entry) return null;
+  
+  const age = Date.now() - entry.timestamp;
+  if (age > CACHE_MAX_AGE_MS) return null;
+  
+  return {
+    quote: entry.quote,
+    isStale: age > CACHE_STALE_AGE_MS,
+  };
+};
 
-  if (entry.dateKey !== todayKey) {
-    return false;
-  }
+type YahooQuoteResult = {
+  symbol: string;
+  regularMarketPrice?: number;
+  regularMarketOpen?: number;
+  regularMarketDayHigh?: number;
+  regularMarketDayLow?: number;
+  regularMarketPreviousClose?: number;
+  regularMarketChange?: number;
+  regularMarketChangePercent?: number;
+  regularMarketVolume?: number;
+  marketCap?: number;
+};
 
-  return Date.now() - entry.timestamp < CACHE_DURATION_MS;
+type YahooQuoteResponse = {
+  quoteResponse?: {
+    result?: YahooQuoteResult[];
+    error?: unknown;
+  };
+};
+
+const fetchYahooQuotes = async (symbols: string[]): Promise<{ quotes: StockQuote[]; errors: StockError[] }> => {
+  const quotes: StockQuote[] = [];
+  const errors: StockError[] = [];
+  
+  try {
+    const symbolList = symbols.join(",");
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symbolList)}`;
+    
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Yahoo Finance responded with ${response.status}`);
+    }
+    
+    const data: YahooQuoteResponse = await response.json();
+    
+    if (!data?.quoteResponse?.result) {
+      throw new Error("Invalid response structure from Yahoo Finance");
+    }
+    
+    const results = data.quoteResponse.result;
+    const symbolsReceived = new Set(results.map((r) => r.symbol));
+    
+    for (const result of results) {
+      if (result.regularMarketPrice === undefined) {
+        errors.push({ symbol: result.symbol, message: "No price data available" });
+        continue;
+      }
+      
+      const changePercent = result.regularMarketChangePercent;
+      const changePercentStr = changePercent !== undefined 
+        ? `${changePercent >= 0 ? "+" : ""}${changePercent.toFixed(2)}%`
+        : null;
+      
+      quotes.push({
+        symbol: result.symbol,
+        price: result.regularMarketPrice ?? null,
+        open: result.regularMarketOpen ?? null,
+        high: result.regularMarketDayHigh ?? null,
+        low: result.regularMarketDayLow ?? null,
+        previousClose: result.regularMarketPreviousClose ?? null,
+        change: result.regularMarketChange ?? null,
+        changePercent: changePercentStr,
+        latestTradingDay: new Date().toISOString().slice(0, 10),
+        volume: result.regularMarketVolume ?? null,
+        marketCap: result.marketCap ?? MARKET_CAP_OVERRIDES[result.symbol] ?? null,
+      });
+    }
+    
+    for (const symbol of symbols) {
+      if (!symbolsReceived.has(symbol)) {
+        errors.push({ symbol, message: "Symbol not found" });
+      }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to fetch from Yahoo Finance";
+    for (const symbol of symbols) {
+      errors.push({ symbol, message });
+    }
+  }
+  
+  return { quotes, errors };
 };
 
 const toNumber = (value: string | undefined): number | null => {
@@ -276,23 +383,28 @@ const toNumber = (value: string | undefined): number | null => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const fetchQuote = async (symbol: string, apiKey: string): Promise<StockQuote | null> => {
+const fetchAlphaVantageQuote = async (symbol: string, apiKey: string): Promise<StockQuote | null> => {
   const params = new URLSearchParams({
     function: "GLOBAL_QUOTE",
     symbol,
     apikey: apiKey,
   });
+  
   const response = await fetch(`https://www.alphavantage.co/query?${params.toString()}`, { cache: "no-store" });
+  
   if (!response.ok) {
     throw new Error(`Alpha Vantage responded with ${response.status}`);
   }
+  
   const payload = await response.json();
+  
   if (payload?.Note) {
     throw new Error(payload.Note);
   }
   if (payload?.["Error Message"]) {
     throw new Error(payload["Error Message"]);
   }
+  
   const quote = payload?.["Global Quote"];
   if (!quote || Object.keys(quote).length === 0) {
     return null;
@@ -313,12 +425,43 @@ const fetchQuote = async (symbol: string, apiKey: string): Promise<StockQuote | 
   };
 };
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const fetchAlphaVantageWithRateLimit = async (
+  symbols: string[],
+  apiKey: string
+): Promise<{ quotes: StockQuote[]; errors: StockError[] }> => {
+  const quotes: StockQuote[] = [];
+  const errors: StockError[] = [];
+  const RATE_LIMIT_DELAY_MS = 12500;
+  
+  for (let i = 0; i < symbols.length; i++) {
+    const symbol = symbols[i];
+    
+    if (i > 0) {
+      await delay(RATE_LIMIT_DELAY_MS);
+    }
+    
+    try {
+      const quote = await fetchAlphaVantageQuote(symbol, apiKey);
+      if (quote) {
+        quotes.push(quote);
+      } else {
+        errors.push({ symbol, message: "No quote data returned" });
+      }
+    } catch (error) {
+      errors.push({
+        symbol,
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }
+  
+  return { quotes, errors };
+};
+
 export async function GET(request: Request) {
   const usePlaceholder = process.env.USE_PLACEHOLDER_STOCKS === "true";
-  const apiKey = process.env.ALPHAVANTAGE_API_KEY;
-  if (!usePlaceholder && !apiKey) {
-    return NextResponse.json({ error: "Alpha Vantage API key not configured" }, { status: 500 });
-  }
 
   const { searchParams } = new URL(request.url);
   const requestedSymbols = searchParams.get("symbols");
@@ -334,17 +477,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "No symbols provided" }, { status: 400 });
   }
 
-  const cacheKey = [...symbols].sort().join(",");
-  const todayKey = getDateKey();
-  let existingEntry: CacheEntry | undefined;
-  if (!usePlaceholder) {
-    const store = await getCacheStore();
-    existingEntry = store[cacheKey];
-    if (isCacheEntryValid(existingEntry, todayKey)) {
-      return NextResponse.json(existingEntry.payload);
-    }
-  }
-
   if (usePlaceholder) {
     const placeholderQuotes = PLACEHOLDER_QUOTES.filter((quote) => symbols.includes(quote.symbol));
     const payload: StocksPayload = {
@@ -352,63 +484,103 @@ export async function GET(request: Request) {
       quotes: placeholderQuotes,
       errors: [],
       lastUpdated: new Date().toISOString(),
+      cacheStatus: "fresh",
     };
-    await upsertCacheEntry(
-      {
-        key: cacheKey,
-        timestamp: Date.now(),
-        dateKey: todayKey,
-        payload,
-      },
-      false,
-    );
     return NextResponse.json(payload);
   }
 
-  const quotes: StockQuote[] = [];
-  const errors: StockError[] = [];
+  const cachedQuotes: StockQuote[] = [];
+  const staleSymbols: string[] = [];
+  const missingSymbols: string[] = [];
 
   for (const symbol of symbols) {
-    try {
-      const quote = await fetchQuote(symbol, apiKey ?? "");
-      if (quote) {
-        quotes.push(quote);
-      } else {
-        errors.push({ symbol, message: "No quote data returned" });
+    const cached = await getCachedQuote(symbol);
+    if (cached) {
+      cachedQuotes.push(cached.quote);
+      if (cached.isStale) {
+        staleSymbols.push(symbol);
       }
-    } catch (error) {
-      errors.push({
-        symbol,
-        message: error instanceof Error ? error.message : "Unknown error",
-      });
+    } else {
+      missingSymbols.push(symbol);
     }
   }
+
+  const needsFresh = missingSymbols.length > 0 || staleSymbols.length > 0;
+  const symbolsToFetch = [...new Set([...missingSymbols, ...staleSymbols])];
+
+  if (!needsFresh) {
+    const payload: StocksPayload = {
+      symbols,
+      quotes: cachedQuotes,
+      errors: [],
+      lastUpdated: new Date().toISOString(),
+      cacheStatus: "fresh",
+    };
+    return NextResponse.json(payload);
+  }
+
+  let fetchedQuotes: StockQuote[] = [];
+  let fetchErrors: StockError[] = [];
+
+  const yahooResult = await fetchYahooQuotes(symbolsToFetch);
+  fetchedQuotes = yahooResult.quotes;
+  fetchErrors = yahooResult.errors;
+
+  const yahooSuccessSymbols = new Set(fetchedQuotes.map((q) => q.symbol));
+  const yahooFailedSymbols = symbolsToFetch.filter((s) => !yahooSuccessSymbols.has(s));
+
+  if (yahooFailedSymbols.length > 0) {
+    const apiKey = process.env.ALPHAVANTAGE_API_KEY;
+    if (apiKey) {
+      const avResult = await fetchAlphaVantageWithRateLimit(yahooFailedSymbols, apiKey);
+      fetchedQuotes = [...fetchedQuotes, ...avResult.quotes];
+      
+      const avSuccessSymbols = new Set(avResult.quotes.map((q) => q.symbol));
+      fetchErrors = fetchErrors.filter((e) => !avSuccessSymbols.has(e.symbol));
+      
+      for (const avError of avResult.errors) {
+        if (!avSuccessSymbols.has(avError.symbol)) {
+          const existingIdx = fetchErrors.findIndex((e) => e.symbol === avError.symbol);
+          if (existingIdx >= 0) {
+            fetchErrors[existingIdx] = avError;
+          } else {
+            fetchErrors.push(avError);
+          }
+        }
+      }
+    }
+  }
+
+  if (fetchedQuotes.length > 0) {
+    await upsertMultipleSymbolCache(fetchedQuotes);
+  }
+
+  const freshSymbolsSet = new Set(fetchedQuotes.map((q) => q.symbol));
+  const finalQuotes: StockQuote[] = [...fetchedQuotes];
+  
+  for (const cached of cachedQuotes) {
+    if (!freshSymbolsSet.has(cached.symbol)) {
+      finalQuotes.push(cached);
+    }
+  }
+
+  const finalErrors = fetchErrors.filter((e) => {
+    const hasFreshQuote = finalQuotes.some((q) => q.symbol === e.symbol);
+    return !hasFreshQuote;
+  });
+
+  const cacheStatus: StocksPayload["cacheStatus"] = 
+    finalErrors.length > 0 ? "partial" : 
+    staleSymbols.length > 0 && fetchedQuotes.length === symbolsToFetch.length ? "fresh" : 
+    "fresh";
 
   const payload: StocksPayload = {
     symbols,
-    quotes,
-    errors,
+    quotes: finalQuotes.sort((a, b) => symbols.indexOf(a.symbol) - symbols.indexOf(b.symbol)),
+    errors: finalErrors,
     lastUpdated: new Date().toISOString(),
+    cacheStatus,
   };
-
-  if (quotes.length === 0) {
-    if (existingEntry) {
-      return NextResponse.json(existingEntry.payload, {
-        headers: {
-          "x-stock-cache-status": "stale",
-        },
-      });
-    }
-
-    return NextResponse.json(payload, { status: 503 });
-  }
-
-  await upsertCacheEntry({
-    key: cacheKey,
-    timestamp: Date.now(),
-    dateKey: todayKey,
-    payload,
-  });
 
   return NextResponse.json(payload);
 }
