@@ -13,8 +13,10 @@ export const Button = ({
     children,
     icon,
     active = false,
-    disabled = false
-}: {text?: string, small?: boolean, onClick?: () => void, children?: React.ReactNode, active?: boolean, disabled?: boolean, icon?: StaticImageData}) => {
+    disabled = false,
+    "aria-label": ariaLabel,
+    title
+}: {text?: string, small?: boolean, onClick?: () => void, children?: React.ReactNode, active?: boolean, disabled?: boolean, icon?: StaticImageData, "aria-label"?: string, title?: string}) => {
     const [isPressed, setIsPressed] = useState(false);
 
     return (
@@ -25,6 +27,8 @@ export const Button = ({
             onMouseDown={() => setIsPressed(true)} 
             onMouseUp={() => setIsPressed(false)}
             onMouseLeave={() => setIsPressed(false)}
+            aria-label={ariaLabel}
+            title={title}
         >
             <div className={`${styles.buttonInner}`}>
                 {

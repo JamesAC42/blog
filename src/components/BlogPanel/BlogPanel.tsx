@@ -1,10 +1,7 @@
 import styles from "./blogpanel.module.scss";
 import { Button } from "../Button/Button";
-import { Window } from "../Window/Window";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import sheep from "@/assets/images/homepage/sheep.gif";
-import sailormoonstamp from "@/assets/images/stamps/sailormoon.png";
+import { EmptyState } from "../EmptyState/EmptyState";
 
 export interface IBlogPost {
     id: string;
@@ -70,9 +67,12 @@ export const BlogPanel = (props: IBlogPanelProps) => {
 
                     {
                         props.recentPosts.length === 0 && (
-                            <div className={styles.noPosts}>
-                                <p>No recent posts</p>
-                            </div>
+                            <EmptyState
+                                title="No recent posts"
+                                message="check back soon~"
+                                seed="recentPosts"
+                                compact
+                            />
                         )
                     }
                 </div>
@@ -102,9 +102,12 @@ export const BlogPanel = (props: IBlogPanelProps) => {
 
                     {
                         props.popularPosts.length === 0 && (
-                            <div className={styles.noPosts}>
-                                <p>No popular posts</p>
-                            </div>
+                            <EmptyState
+                                title="No popular posts"
+                                message="nothing trending yet..."
+                                seed="popularPosts"
+                                compact
+                            />
                         )
                     }
                 </div>

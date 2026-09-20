@@ -23,6 +23,7 @@ import lainfade from "@/assets/images/lainfade.png";
 import kumabubble from "@/assets/images/blog/kumabubble.png";
 import Link from "next/link";
 import { Footer } from "@/components/Footer/Footer";
+import { EmptyState } from "@/components/EmptyState/EmptyState";
 
 type SortOption = "newest" | "oldest" | "popular" | "liked";
 
@@ -221,6 +222,13 @@ function BlogContent() {
                     </div>
                 </Window>
                 <div className={styles.blogPosts}>
+                    {items.length === 0 && (
+                        <EmptyState
+                            title="No posts found"
+                            message="try adjusting your filters or check back later~"
+                            seed="blogList"
+                        />
+                    )}
                     {items.map((it) => (
                         <Link href={`/blog/${it.slug}`} key={it.id} className={styles.postLink}>
                             <PostItem featured={false} item={it} onClick={() => {}} />

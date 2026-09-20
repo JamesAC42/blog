@@ -11,6 +11,7 @@ import styles from "./scrapbook.module.scss";
 import open from "@/assets/images/icons/open.png";
 import { computeTilt } from "@/utilities/computeTilt";
 import { Footer } from "@/components/Footer/Footer";
+import { EmptyState } from "@/components/EmptyState/EmptyState";
 
 type ScrapbookItem = { id: string; imageUrl: string; caption: string; takenAt?: string | null; album?: string | null; tags?: string[] };
 
@@ -47,8 +48,13 @@ function PolaroidCard({ item, index, focused, onClick }: {
             <div 
                 className={styles.polaroidOpen}
                 onClick={(e) => handleOpen(e)}
+                role="button"
+                tabIndex={0}
+                aria-label="Open image in new tab"
+                title="Open full size"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleOpen(e as unknown as React.MouseEvent<HTMLDivElement>); }}
                 >
-                <Image src={open} alt="Open" />
+                <Image src={open} alt="" aria-hidden="true" />
             </div>
         </div>
     );
@@ -242,7 +248,11 @@ export default function Scrapbook() {
             {tagFilter.trim() && (
                 <>
                     {items.length === 0 ? (
-                        <div className={`${styles.loadingContainer} windowStyle`}>No pictures match these tags.</div>
+                        <EmptyState
+                            title="No pictures match these tags"
+                            message="try different tags~"
+                            seed="galleryTags"
+                        />
                     ) : (
                         <div className={`${styles.grid} ${gridClass}`}>
                             <PolaroidList
@@ -265,7 +275,11 @@ export default function Scrapbook() {
             {!tagFilter.trim() && album && (
                 <>
                     {items.length === 0 ? (
-                        <div className={`${styles.loadingContainer} windowStyle`}>No pictures to display here.</div>
+                        <EmptyState
+                            title="No pictures in this album"
+                            message="this album is empty..."
+                            seed="galleryAlbum"
+                        />
                     ) : (
                         <div className={`${styles.grid} ${styles.mt1} ${focusedId ? styles.gridDim : ""}`}>
                             <PolaroidList
@@ -283,31 +297,39 @@ export default function Scrapbook() {
             )}
 
             {!tagFilter.trim() && !album && (
-                Object.entries(groups).map(([alb, imgs]) => {
-                    const top3 = imgs.slice(0, 3);
-                    return (
-                        <div key={alb} className={styles.mb2}>
-                            <h2 className={styles.albumHeader}>{alb}</h2>
-                            <div className={`${styles.grid} ${styles.mt1} ${focusedId && focusedAlbumKey === alb ? styles.gridDim : ""}`}>
-                                <PolaroidList
-                                    items={top3}
-                                    focusedId={focusedId}
-                                    onCardClick={(e, item) => {
-                                        setFocusedAlbumKey(alb);
-                                        handleCardClick(e, item);
-                                    }}
-                                />
-                                {imgs.length > 3 && (
-                                    <div onClick={() => { setAlbum(alb === "Uncategorized" ? "__null__" : alb); setPage(1); setFocusedId(null); setFocusedAlbumKey(null); setGridClass(""); }}  className={styles.seeAllCell}>
-                                        <div className={styles.buttonInner}>
-                                            View All &gt;
+                Object.keys(groups).length === 0 && !loading ? (
+                    <EmptyState
+                        title="Gallery is empty"
+                        message="no pictures uploaded yet~"
+                        seed="galleryEmpty"
+                    />
+                ) : (
+                    Object.entries(groups).map(([alb, imgs]) => {
+                        const top3 = imgs.slice(0, 3);
+                        return (
+                            <div key={alb} className={styles.mb2}>
+                                <h2 className={styles.albumHeader}>{alb}</h2>
+                                <div className={`${styles.grid} ${styles.mt1} ${focusedId && focusedAlbumKey === alb ? styles.gridDim : ""}`}>
+                                    <PolaroidList
+                                        items={top3}
+                                        focusedId={focusedId}
+                                        onCardClick={(e, item) => {
+                                            setFocusedAlbumKey(alb);
+                                            handleCardClick(e, item);
+                                        }}
+                                    />
+                                    {imgs.length > 3 && (
+                                        <div onClick={() => { setAlbum(alb === "Uncategorized" ? "__null__" : alb); setPage(1); setFocusedId(null); setFocusedAlbumKey(null); setGridClass(""); }}  className={styles.seeAllCell}>
+                                            <div className={styles.buttonInner}>
+                                                View All &gt;
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    );
-                })
+                        );
+                    })
+                )
             )}
 
             {loading && (

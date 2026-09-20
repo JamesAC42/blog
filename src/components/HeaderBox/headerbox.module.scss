@@ -109,6 +109,11 @@
     z-index: 1000;
 
     animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+        transform: rotate(10deg) scale(1);
+    }
 }
 .headerDecorTopRight {
     top: -6rem;

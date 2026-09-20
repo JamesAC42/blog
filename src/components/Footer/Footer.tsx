@@ -2,12 +2,13 @@ import styles from "./footer.module.scss";
 import { Window } from "../Window/Window";
 
 export const Footer = ({ lastUpdated }: { lastUpdated?: string }) => {
+    const currentYear = new Date().getFullYear();
     return (
         <div className={styles.footer}>
             <Window>
                 <div className={`windowContent ${styles.footerOuter}`}>
                     <div className={styles.footerContainer}>
-                        <p>copyright 2025 jamescrovo.com</p>
+                        <p>copyright {currentYear} jamescrovo.com</p>
                         <p>tuned for wide displays • 1920×1080</p>
                         {
                             lastUpdated && (

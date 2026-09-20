@@ -170,6 +170,13 @@
             opacity: 0;
         }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        .blinker .blinkerInner::before {
+            animation: none;
+            opacity: 1;
+        }
+    }
 }
 
 .lainOverlayText {
