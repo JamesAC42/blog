@@ -1,0 +1,84 @@
+name: Deploy blog to production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: blog-production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Configure this environment in GitHub for an optional manual approval gate.
+    environment: production
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+
+    steps:
+      - name: Configure SSH agent
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+      - name: Install the reviewed VPS host key
+        env:
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -Eeuo pipefail
+          test -n "$VPS_KNOWN_HOSTS"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Pull, build, migrate, restart blog only, and check health
+        run: |
+          set -Eeuo pipefail
+          test -n "$VPS_HOST"
+          test -n "$VPS_USER"
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$VPS_USER@$VPS_HOST" 'bash -s' <<'REMOTE'
+          set -Eeuo pipefail
+          APP=/var/www/jamescrovo.com/source/blog
+          cd "$APP"
+
+          export NVM_DIR="$HOME/.nvm"
+          . "$NVM_DIR/nvm.sh"
+
+          # Verify we're on main and the tree is clean
+          test "$(git branch --show-current)" = main
+          if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo 'Refusing deployment: production checkout is not clean.' >&2
+            git status --short >&2
+            exit 1
+          fi
+
+          git fetch --prune origin main
+          git pull --ff-only origin main
+
+          npm ci --include=dev
+          npx --no-install prisma generate
+          npx --no-install prisma migrate deploy
+          npm run build
+
+          # Restart ONLY the blog PM2 process — never restart other apps on this shared VPS
+          pm2 restart blog --update-env
+
+          # Health check: poll until the app responds
+          health_url=http://127.0.0.1:3000/api/stocks
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error --max-time 5 "$health_url" >/dev/null; then
+              echo "Health check passed on attempt $attempt"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Health check failed: $health_url" >&2
+          exit 1
+          REMOTE
