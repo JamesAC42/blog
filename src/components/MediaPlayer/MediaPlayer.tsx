@@ -94,18 +94,18 @@ export const MediaPlayer = () => {
                     </div>
 
                     <div className={styles.playbackControls}>
-                        <Button small onClick={playAudio}>
-                            <Image src={playIcon} alt="play" className={styles.playButton} width={24} height={24} />
+                        <Button small onClick={playAudio} aria-label="Play" title="Play">
+                            <Image src={playIcon} alt="" className={styles.playButton} width={24} height={24} aria-hidden="true" />
                         </Button>
-                        <Button small onClick={() => stopAudio(false)    }>
-                            <Image src={pauseIcon} alt="pause" className={styles.playButton} width={24} height={24} />
+                        <Button small onClick={() => stopAudio(false)} aria-label="Pause" title="Pause">
+                            <Image src={pauseIcon} alt="" className={styles.playButton} width={24} height={24} aria-hidden="true" />
                         </Button>
-                        <Button small onClick={() => stopAudio(true)}>
-                            <Image src={stopIcon} alt="stop" className={styles.playButton} width={24} height={24} />
+                        <Button small onClick={() => stopAudio(true)} aria-label="Stop" title="Stop">
+                            <Image src={stopIcon} alt="" className={styles.playButton} width={24} height={24} aria-hidden="true" />
                         </Button>
 
                         <div className={styles.volumeControl}>
-                            <Image src={volumeLevel === 0 ? muteIcon : volumeIcon} alt="volume" width={24} height={24} />
+                            <Image src={volumeLevel === 0 ? muteIcon : volumeIcon} alt="" width={24} height={24} aria-hidden="true" />
                             <input
                                 type="range"
                                 min={0}
@@ -113,6 +113,7 @@ export const MediaPlayer = () => {
                                 step={0.1}
                                 value={volumeLevel}
                                 onChange={handleVolume}
+                                aria-label="Volume"
                             />
                         </div>
                     </div>

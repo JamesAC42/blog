@@ -25,34 +25,37 @@ export const Window = ({
                         showButtons &&
                         <div className={styles.windowButtons}>
                             <div className={styles.windowButtonContainer}>
-                                <Button onClick={() => {}} small={true}>
+                                <Button onClick={() => {}} small={true} aria-label="Minimize window">
                                     <Image 
                                         src={minimize} 
-                                        alt="minimize" 
+                                        alt="" 
                                         width={32} 
                                         height={32} 
-                                        className={`${styles.windowButton} ${styles.windowButtonMinimize}`} />
+                                        className={`${styles.windowButton} ${styles.windowButtonMinimize}`}
+                                        aria-hidden="true" />
                                 </Button>
                             </div>
                             <div className={styles.windowButtonContainer}>
-                                <Button onClick={() => {}} small={true}>
+                                <Button onClick={() => {}} small={true} aria-label="Maximize window">
                                     <Image 
                                         src={maximize} 
-                                        alt="maximize" 
+                                        alt="" 
                                         width={32} 
                                         height={32} 
                                         className={styles.windowButton}
+                                        aria-hidden="true"
                                     />
                                 </Button>
                             </div>
                             <div className={styles.windowButtonContainer}>
-                                <Button onClick={() => {}} small={true}>
+                                <Button onClick={() => {}} small={true} aria-label="Close window">
                                     <Image 
                                         src={close} 
-                                        alt="close" 
+                                        alt="" 
                                         width={32} 
                                         height={32} 
                                         className={styles.windowButton}
+                                        aria-hidden="true"
                                     />
                                 </Button>
                             </div>

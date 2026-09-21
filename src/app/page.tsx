@@ -135,17 +135,17 @@ export default function Home() {
                   </Link>
 
                   <div className={styles.socialMediaContainer}>
-                    <Button small={true} onClick={() => window.open("https://github.com/jamesac42", "_blank")}>
-                      <Image src={github} alt="github" width={20} height={20} />
+                    <Button small={true} onClick={() => window.open("https://github.com/jamesac42", "_blank")} aria-label="GitHub profile" title="GitHub">
+                      <Image src={github} alt="" width={20} height={20} aria-hidden="true" />
                     </Button>
-                    <Button small={true} onClick={() => window.open("https://x.com/fifltriggi", "_blank")}>
-                      <Image src={xlogo} alt="x" width={20} height={20} />
+                    <Button small={true} onClick={() => window.open("https://x.com/fifltriggi", "_blank")} aria-label="X (Twitter) profile" title="X (Twitter)">
+                      <Image src={xlogo} alt="" width={20} height={20} aria-hidden="true" />
                     </Button>
-                    <Button small={true} onClick={() => window.open("https://www.linkedin.com/in/jamescrovo", "_blank")}>
-                      <Image src={linkedin} alt="linkedin" width={20} height={20} />
+                    <Button small={true} onClick={() => window.open("https://www.linkedin.com/in/jamescrovo", "_blank")} aria-label="LinkedIn profile" title="LinkedIn">
+                      <Image src={linkedin} alt="" width={20} height={20} aria-hidden="true" />
                     </Button>
-                    <Button small={true} onClick={() => window.open("mailto:jamescrovo450@gmail.com", "_blank")}>
-                      <Image src={email} alt="email" width={20} height={20} />
+                    <Button small={true} onClick={() => window.open("mailto:jamescrovo450@gmail.com", "_blank")} aria-label="Send email" title="Email">
+                      <Image src={email} alt="" width={20} height={20} aria-hidden="true" />
                     </Button>
                   </div>
                 </div>

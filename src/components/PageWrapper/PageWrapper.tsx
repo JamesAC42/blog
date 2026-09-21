@@ -32,6 +32,7 @@ async function getProfileOnce(): Promise<ProfileHeader> {
 
 export const PageWrapper = ({ children }: IPageWrapperProps) => {
     const [profile, setProfile] = useState<ProfileHeader | null>(null);
+    const currentYear = new Date().getFullYear();
 
     useEffect(() => {
         let mounted = true;
@@ -55,20 +56,20 @@ export const PageWrapper = ({ children }: IPageWrapperProps) => {
                 <Window>
                     <div className={styles.navFooter}>
                         <div className={styles.copyright}>
-                            Copyright © 2025
+                            Copyright © {currentYear}
                         </div>
                         <div className={styles.socialMedia}>
-                            <a href="https://github.com/jamesac42" target="_blank" rel="noopener noreferrer">
-                                <Image src={github} alt="github placeholder" />
+                            <a href="https://github.com/jamesac42" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" title="GitHub">
+                                <Image src={github} alt="" aria-hidden="true" />
                             </a>
-                            <a href="https://www.linkedin.com/in/jamescrovo" target="_blank" rel="noopener noreferrer">
-                                <Image src={linkedin} alt="linkedin placeholder" />
+                            <a href="https://www.linkedin.com/in/jamescrovo" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+                                <Image src={linkedin} alt="" aria-hidden="true" />
                             </a>
-                            <a href="https://twitter.com/fifltriggi" target="_blank" rel="noopener noreferrer">
-                                <Image src={xlogo} alt="twitter" />
+                            <a href="https://twitter.com/fifltriggi" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter) profile" title="X (Twitter)">
+                                <Image src={xlogo} alt="" aria-hidden="true" />
                             </a>
-                            <a href="mailto:jamescrovo450@gmail.com" target="_blank" rel="noopener noreferrer">
-                                <Image src={email} alt="video placeholder" />
+                            <a href="mailto:jamescrovo450@gmail.com" target="_blank" rel="noopener noreferrer" aria-label="Send email" title="Email">
+                                <Image src={email} alt="" aria-hidden="true" />
                             </a>
                         </div>
                     </div>

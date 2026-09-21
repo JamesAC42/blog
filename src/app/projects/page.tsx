@@ -11,6 +11,7 @@ import { formatProjectDate, sortProjects } from "@/utilities/portfolio";
 import { getLinkDisplayLabel, getPresetForType } from "@/components/PortfolioLink/PortfolioLinkIcons";
 import { ProjectGallery } from "@/components/PortfolioProject/ProjectGallery";
 import { Footer } from "@/components/Footer/Footer";
+import { EmptyState } from "@/components/EmptyState/EmptyState";
 
 export const revalidate = 0;
 
@@ -55,6 +56,13 @@ export default async function PortfolioPage() {
       <br/>
       <div className={styles.portfolioPage}>
         <section className={styles.projectsSection}>
+          {projects.length === 0 && (
+            <EmptyState
+              title="No projects yet"
+              message="portfolio coming soon~"
+              seed="projectsEmpty"
+            />
+          )}
           {sortProjects(projects).map((project) => {
             const images = project.images ?? [];
             const [heroImage, ...galleryImages] = images;

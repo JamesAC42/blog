@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Window } from "../Window/Window";
 import { Button } from "../Button/Button";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { EmptyState } from "../EmptyState/EmptyState";
 
 import previous from "../../assets/images/icons/previous.png";
 import next from "../../assets/images/icons/next.png";
@@ -306,11 +307,11 @@ export const GalleryPreview = (props: IGalleryPreviewProps) => {
             <div className={styles.galleryPreview}>
                 {
                     props.images.length === 0 && (
-                        <div className={styles.galleryPreviewItem}>
-                            <Window>
-                                <span>No images</span>
-                            </Window>
-                        </div>
+                        <EmptyState
+                            title="No images yet"
+                            message="the gallery is empty..."
+                            seed="galleryPreview"
+                        />
                     )
                 }
 
@@ -336,12 +337,12 @@ export const GalleryPreview = (props: IGalleryPreviewProps) => {
                 </div>
             </div>
             <div className={styles.actions}>
-                <Button disabled={atLeftEdge} onClick={goToPrev}>
-                    <Image src={previous} alt="previous" width={20} height={20} />
+                <Button disabled={atLeftEdge} onClick={goToPrev} aria-label="Previous image" title="Previous">
+                    <Image src={previous} alt="" width={20} height={20} aria-hidden="true" />
                 </Button>
                 <Button text="view more" onClick={() => { window.location.href = "/gallery"; }} />
-                <Button disabled={atRightEdge} onClick={goToNext}>
-                    <Image src={next} alt="next" width={20} height={20} />
+                <Button disabled={atRightEdge} onClick={goToNext} aria-label="Next image" title="Next">
+                    <Image src={next} alt="" width={20} height={20} aria-hidden="true" />
                 </Button>
             </div>
         </>
