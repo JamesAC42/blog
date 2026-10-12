@@ -14,6 +14,8 @@ permissions:
 
 jobs:
   deploy:
+    # Once DEPLOY_MODE is "docker", deploy-docker.yml deploys instead.
+    if: vars.DEPLOY_MODE != 'docker'
     runs-on: ubuntu-latest
     # Configure this environment in GitHub for an optional manual approval gate.
     environment: production
