@@ -21,6 +21,14 @@ TURNSTILE_SECRET_KEY=your-secret-key
 # Fallback 2: Alpha Vantage (rate-limited, requires API key)
 ALPHAVANTAGE_API_KEY=your-alpha-vantage-key  # Optional last-resort fallback
 USE_PLACEHOLDER_STOCKS=true                   # Set to "true" to use hardcoded placeholder data
+
+# Media uploads (Cloudflare R2, S3-compatible). Leave AWS_S3_ENDPOINT unset to use AWS S3.
+AWS_S3_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+AWS_REGION=auto
+AWS_S3_BUCKET=your-bucket
+AWS_ACCESS_KEY_ID=r2-token-access-key-id
+AWS_SECRET_ACCESS_KEY=r2-token-secret
+AWS_S3_PUBLIC_BASE_URL=https://media.jamescrovo.com   # bucket's public custom domain (or r2.dev URL)
 ```
 
 3. Prisma setup:
