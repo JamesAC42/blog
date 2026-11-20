@@ -6,10 +6,11 @@ import type { AniListCollection } from '@/lib/anilist';
 import { Button } from '../Button/Button';
 import { Window } from '../Window/Window';
 
-type Props = { user?: string };
+type Props = { user?: string; onError?: () => void };
 
 export default function Anilist(props: Props) {
     const user = props.user || 'jamesac42';
+    const { onError } = props;
     const [collection, setCollection] = useState<AniListCollection | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const fetchedRef = useRef(false);
@@ -27,10 +28,11 @@ export default function Anilist(props: Props) {
                 setCollection(json.collection as AniListCollection);
             } catch (e: unknown) {
                 setErrorMessage(e instanceof Error ? e.message : 'Failed to load AniList data');
+                onError?.();
             }
         };
         load();
-    }, [user]);
+    }, [user, onError]);
 
     if (errorMessage) return <div className={styles.error}>Failed to load AniList data: {errorMessage}</div>;
     if (!collection) return <div className={styles.loading}>Loading AniList…</div>;

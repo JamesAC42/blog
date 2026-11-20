@@ -10,6 +10,11 @@
     padding-bottom:2rem;
 }
 
+/* `div.` beats the shared markdown measure: this card lays out floats edge to edge */
+div.contentCard {
+    max-width: none;
+}
+
 .contentCard {
     position: relative;
     display: flow-root;

@@ -161,11 +161,7 @@ function BlogContent() {
 
             <div className={styles.blogSection}>
                 <div className={styles.featuredPosts}>
-                    <Window>
-                        <div className={styles.featuredPostsTitle}>
-                            <h2>Featured Post</h2>
-                        </div>
-                    </Window>
+                    <Window header="featured post" showButtons={true}>
                     <div className={styles.featuredPostsList}>
                         {featured && (
                             <Link href={`/blog/${featured.slug}`} className={styles.postLink}>
@@ -176,6 +172,7 @@ function BlogContent() {
                             <Image src={lainfade} alt="lain" width={429} height={414} className={styles.kumabubble} />
                         </div>
                     </div>
+                    </Window>
                 </div>
                 <div className={styles.filterOuter}>
                     <div className={styles.searchContainer}>
@@ -215,9 +212,8 @@ function BlogContent() {
                 </div>
             </div>
             <div className={styles.blogPostsSection}>
-                <Window>
+                <Window header="all posts" showButtons={true}>
                     <div className={styles.blogPostsTitle}>
-                        <h2>Blog Posts</h2>
                         <h4>Category: {activeTags.length ? activeTags.join(", ") : "All"} | Sort: {sort[0].toUpperCase() + sort.slice(1)}</h4>
                     </div>
                 </Window>

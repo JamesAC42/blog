@@ -14,11 +14,37 @@
     --color-accent: #7f5af0;
     --color-accent-bright: #3fd0ff;
     --color-accent-soft: #4a5fff;
+    --color-accent-lilac: #b7afff;
+
+    /* type: one display face, one pixel UI face, one reading face, one mono for code/data */
+    --font-display: var(--font-deadcrt), var(--font-pixel-mix), monospace;
+    --font-ui: var(--font-pixel-mix), var(--font-noto-sans-jp), monospace;
+    --font-body: var(--font-nunito), var(--font-noto-sans-jp), system-ui, sans-serif;
+    --font-mono: var(--font-miracode), ui-monospace, monospace;
+
+    --leading-tight: 1.2;
+    --leading-ui: 1.5;
+    --leading-body: 1.7;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+
+    --bevel-light: rgba(183, 175, 255, 0.82);
+    --bevel-dark: rgba(37, 41, 81, 0.9);
+    --glow-rest: 0 0 6px 1px rgba(153, 146, 255, 0.45);
+    --glow-hover: 0 0 14px 3px rgba(153, 146, 255, 0.6);
+    --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 body {
     cursor: var(--default-cursor-url), auto;
     margin: 0;
+    line-height: var(--leading-ui);
+    -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
     background-color: var(--color-bg);
     color: var(--color-text-primary);
@@ -54,27 +80,26 @@ body {
 }
 
 .windowStyle {
-    border-top: 3px solid rgba(128, 168, 255, 0.82);
-    border-left: 3px solid rgba(128, 168, 255, 0.82);
-    border-top: 3px solid rgba(183, 175, 255, 0.82);
-    border-left: 3px solid rgba(183, 175, 255, 0.82);
-    border-right: 3px solid rgba(5, 10, 26, 0.9);
-    border-bottom: 3px solid rgba(5, 10, 26, 0.9);
-    border-right: 3px solid rgba(37, 41, 81, 0.9);
-    border-bottom: 3px solid rgba(37, 41, 81, 0.9);
-    border-top: 3px solid rgba(183, 175, 255, 0.82);
-    border-left: 3px solid rgba(183, 175, 255, 0.82);
-    border-right: 3px solid rgba(37, 41, 81, 0.9);
-    border-bottom: 3px solid rgba(37, 41, 81, 0.9);
+    border-top: 3px solid var(--bevel-light);
+    border-left: 3px solid var(--bevel-light);
+    border-right: 3px solid var(--bevel-dark);
+    border-bottom: 3px solid var(--bevel-dark);
     outline: 1px solid rgba(93, 118, 255, 0.6);
     box-shadow: 0 0 5px var(--color-shadow);
     padding: 0;
-    background:
-        linear-gradient(135deg, rgba(14, 20, 58, 0.92), rgba(5, 9, 32, 0.96));
-    background:
-        linear-gradient(135deg, rgba(32, 30, 56, 0.92), rgba(11, 10, 14, 0.96));
-    background:#101010;
+    background: #101010;
     color: var(--color-text-primary);
+}
+
+/* keyboard focus that matches the CRT glow instead of the browser default */
+:focus-visible {
+    outline: 2px solid var(--color-accent-bright);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: rgba(127, 90, 240, 0.55);
+    color: #fff;
 }
 
 .pageContainer {

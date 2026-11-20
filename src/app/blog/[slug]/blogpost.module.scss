@@ -152,15 +152,12 @@
 }
 
 .postContent {
-
-    margin:2.5rem 0;
-    padding:1rem 0;
-    background:#ffffffbc;
-    background: linear-gradient(135deg, rgba(15, 15, 15, 0.932), rgb(18, 18, 18));
-    backdrop-filter:blur(10px);
-    border:1px solid #bcaee7;
-    border-radius:0.5rem;
-    padding-bottom:2rem;
+    margin: 2rem 0;
+    padding: 2.5rem 0 2rem;
+    background: linear-gradient(135deg, rgba(15, 15, 15, 0.94), rgb(18, 18, 18));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(183, 175, 255, 0.55);
+    box-shadow: var(--glow-rest);
     position: relative;
 }
 

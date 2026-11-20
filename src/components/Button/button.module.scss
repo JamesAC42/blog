@@ -5,11 +5,18 @@
     font-size: 0.9rem;
     background: linear-gradient(180deg, rgba(46, 60, 142, 0.9), rgba(14, 19, 52, 0.95));
     color: var(--color-text-primary);
-    transition: transform 0.12s ease, box-shadow 0.2s ease;
+    transition: transform 0.12s var(--ease-snap), box-shadow 0.2s ease, filter 0.2s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
         cursor: var(--pointer-cursor-url), auto;
-        box-shadow: 0 0 12px rgba(64, 140, 255, 0.45);
+        box-shadow: 0 0 12px rgba(64, 140, 255, 0.55);
+        filter: brightness(1.15);
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
+        filter: brightness(0.95);
     }
 
     .buttonInner {
@@ -23,6 +30,7 @@
             position: relative;
             font-family: var(--font-pixel-mix);
             font-size: 0.7rem;
+            line-height: var(--leading-ui);
             color: var(--color-accent-bright);
             text-shadow: 0 0 6px rgba(63, 208, 255, 0.55);
 
@@ -52,10 +60,9 @@
         }
     }
 
-    &:focus {
-        .buttonInner {
-            outline: 1px dotted rgba(111, 148, 255, 0.8);
-        }
+    &:focus-visible {
+        outline: 2px solid var(--color-accent-bright);
+        outline-offset: 2px;
     }
 
     &.small {
@@ -65,17 +72,11 @@
             padding: 0 4px;
         }
 
-        &:focus {
-            .buttonInner {
-                outline: none;
-            }
-        }
     }
 
     &.active {
         .buttonInner {
             .buttonText {
-                color: var(--color-accent);
                 color: #e5daff;
                 text-shadow: 0 0 6px rgba(126, 92, 255, 0.6);
 
