@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./page.module.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ProfilePanel } from "@/components/ProfilePanel/ProfilePanel";
 import { Window } from "@/components/Window/Window";
 import { Button } from "@/components/Button/Button";
@@ -61,6 +61,7 @@ interface HomeState {
 
 export default function Home() {
   const [homeData, setHomeData] = useState<HomeState | null>(null);
+  const [anilistFailed, setAnilistFailed] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -75,6 +76,8 @@ export default function Home() {
     };
     load();
   }, []);
+
+  const handleAnilistError = useCallback(() => setAnilistFailed(true), []);
 
   if (homeData === null) {
     return (
@@ -92,6 +95,8 @@ export default function Home() {
       </div>
     )
   }
+
+  const hasJournal = (homeData?.journal?.entries?.length ?? 0) > 0;
 
   return (
     <div className={`pageContainer scrollArea`}>
@@ -152,6 +157,12 @@ export default function Home() {
               </HeaderBox>
             </div>
 
+            <div className={`${styles.spanFull} ${styles.tapeSlot}`}>
+              <Window>
+                <StockTickerPanel compact />
+              </Window>
+            </div>
+
             <div className={`${styles.spanFull}`}>
               <Window header="lain.jpg" showButtons={true}>
                 <div className={styles.lainImage}>
@@ -186,6 +197,29 @@ export default function Home() {
               </Window>
             </div>
 
+            {hasJournal && (
+            <div id="journal" className={styles.span6}>
+              <JournalPanel entries={homeData?.journal?.entries ?? []} />
+            </div>
+            )}
+
+            <div id="todo" className={hasJournal ? styles.span4 : styles.span10}>
+              <Window header="todo" showButtons={true}>
+                <TodoPanel todos={homeData?.todo?.todos ?? []} />
+              </Window>
+            </div>
+
+            <div className={styles.span2}>
+              <div className={styles.panelImages}>
+                <Window>
+                  <Image src={clicktosave} alt="clicktosave" width={736} height={414} className={styles.paneImage} />
+                </Window>
+                <Window>
+                  <Image src={aerodynamicscow} alt="aerodynamicscow" width={452} height={330} className={styles.paneImage} />
+                </Window>
+              </div>
+            </div>
+
             <div className={styles.span2}>
               <div className={styles.panelImages}>
                 <Window>
@@ -218,33 +252,6 @@ export default function Home() {
             </div>
 
             <div className={styles.spanFull}>
-              <Window header="stock ticker" showButtons={true}>
-                <StockTickerPanel />
-              </Window>
-            </div>
-            
-            <div id="todo" className={styles.span4}>
-              <Window header="todo" showButtons={true}>
-                <TodoPanel todos={homeData?.todo?.todos ?? []} />
-              </Window>
-            </div>
-
-            <div id="journal" className={styles.span6}>
-              <JournalPanel entries={homeData?.journal?.entries ?? []} />
-            </div>
-
-            <div className={styles.span2}>
-              <div className={styles.panelImages}>
-                <Window>
-                  <Image src={clicktosave} alt="clicktosave" width={736} height={414} className={styles.paneImage} />
-                </Window>
-                <Window>
-                  <Image src={aerodynamicscow} alt="aerodynamicscow" width={452} height={330} className={styles.paneImage} />
-                </Window>
-              </div>
-            </div>
-
-            <div className={styles.spanFull}>
                 <div className={styles.mikuImage}>
                   <Image
                     src={miku}
@@ -255,13 +262,15 @@ export default function Home() {
                 </div>
             </div>
 
+            {!anilistFailed && (
             <div id="anilist" className={styles.spanFull}>
               <Window header="anilist" showButtons={true}>
                 <div className={`windowContent`}>
-                  <Anilist user="jamesac42" />
+                  <Anilist user="jamesac42" onError={handleAnilistError} />
                 </div>
               </Window>
             </div>
+            )}
 
             <div id="analytics" className={styles.span10}>
               <Window header="telemetry" showButtons={true}>

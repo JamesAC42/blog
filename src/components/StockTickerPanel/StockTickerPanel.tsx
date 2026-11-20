@@ -24,7 +24,12 @@ type StocksResponse = {
   cacheStatus?: "fresh" | "stale" | "partial";
 };
 
-export const StockTickerPanel = () => {
+/**
+ * `compact` renders a slim scrolling tape (homepage); the default renders the
+ * full table + market-cap heatmap. Compact mode renders nothing on error so the
+ * homepage never shows a broken widget.
+ */
+export const StockTickerPanel = ({ compact = false }: { compact?: boolean }) => {
   const [quotes, setQuotes] = useState<StockQuote[]>([]);
   const [panelError, setPanelError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<StocksResponse["errors"]>([]);
@@ -129,6 +134,36 @@ export const StockTickerPanel = () => {
     }
     return `${(value / 1_000_000).toFixed(1)}M`;
   };
+
+  if (compact) {
+    if (isLoading || panelError || quotes.length === 0) return null;
+    const tapeItems = quotes.filter((q) => q.price !== null);
+    const renderItems = (keyPrefix: string, hidden = false) =>
+      tapeItems.map((quote) => {
+        const change = quote.change ?? 0;
+        const dir = change > 0 ? styles.positive : change < 0 ? styles.negative : styles.flat;
+        return (
+          <span className={styles.tapeItem} key={`${keyPrefix}-${quote.symbol}`} aria-hidden={hidden || undefined}>
+            <span className={styles.tickerSymbol}>{quote.symbol}</span>
+            <span className={styles.price}>{formatCurrency(quote.price)}</span>
+            <span className={`${styles.change} ${dir}`}>
+              {change > 0 ? "▲" : change < 0 ? "▼" : "■"} {quote.changePercent ?? ""}
+            </span>
+          </span>
+        );
+      });
+    return (
+      <div className={styles.tape} title={lastUpdatedLabel ? `Updated ${lastUpdatedLabel}` : undefined}>
+        <span className={styles.tapeLabel}>mkt</span>
+        <div className={styles.tapeViewport}>
+          <div className={styles.tapeTrack}>
+            {renderItems("a")}
+            {renderItems("b", true)}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`windowContent`}>

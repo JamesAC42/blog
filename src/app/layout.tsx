@@ -1,22 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ScreenOverlay } from "@/components/ScreenOverlay/ScreenOverlay";
-import { 
-  absoluteBeauty, 
-  adelia, 
-  checkpoint, 
-  cuteNotes, 
-  missFajardose, 
-  nunito, 
-  starborn,
-  notoSansJP,
-  pixelMix,
-  chalktastic,
-  chewy,
-  sourGummy,
-  deadCRT,
-  miracode
-} from "@/styles/fonts";
+import { nunito, notoSansJP, pixelMix, deadCRT, miracode, chalktastic } from "@/styles/fonts";
 
 export const metadata: Metadata = {
   title: "James Crovo",
@@ -31,22 +16,9 @@ export const metadata: Metadata = {
   },
 };
 
-const fonts = [
-  cuteNotes, 
-  absoluteBeauty, 
-  missFajardose, 
-  nunito, 
-  adelia, 
-  checkpoint, 
-  starborn,
-  notoSansJP,
-  pixelMix,
-  chalktastic,
-  chewy,
-  sourGummy,
-  deadCRT,
-  miracode
-];
+// display (DeadCRT), pixel UI (PixelMix), reading (Nunito), code/data (Miracode),
+// a JP fallback, and Chalktastic for handwritten scrapbook captions only
+const fonts = [nunito, notoSansJP, pixelMix, deadCRT, miracode, chalktastic];
 
 export default function RootLayout({
   children,

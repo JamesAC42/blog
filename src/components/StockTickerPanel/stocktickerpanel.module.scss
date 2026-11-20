@@ -22,7 +22,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
-    font-family: var(--font-pixel-mix), var(--font-sans);
+    font-family: var(--font-ui);
 }
 
 .row {
@@ -81,7 +81,7 @@
 }
 
 .range, .volume {
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     font-size: 0.85rem;
     color: var(--color-text-secondary, #9ba8c9);
 }
@@ -210,5 +210,73 @@
 
     .headerRow {
         display: none;
+    }
+}
+
+
+/* ---- compact scrolling tape (homepage) ---- */
+.tape {
+    display: flex;
+    align-items: stretch;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1;
+    overflow: hidden;
+}
+
+.tapeLabel {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--space-3);
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(90deg, #5d6dff, #8479f2);
+    text-shadow: 0 1px 0 rgba(22, 18, 70, 0.75);
+    flex-shrink: 0;
+}
+
+.tapeViewport {
+    flex: 1;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+
+.tapeTrack {
+    display: flex;
+    width: max-content;
+    animation: tapeScroll 45s linear infinite;
+
+    &:hover {
+        animation-play-state: paused;
+    }
+}
+
+.tapeItem {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    padding: 0.55rem 1.25rem;
+    white-space: nowrap;
+    border-right: 1px solid rgba(183, 175, 255, 0.15);
+
+    .tickerSymbol { color: #e5daff; }
+    .price { color: var(--color-text-primary); }
+}
+
+@keyframes tapeScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tapeTrack {
+        animation: none;
+        flex-wrap: wrap;
+        width: auto;
+
+        .tapeItem[aria-hidden="true"] { display: none; }
     }
 }
